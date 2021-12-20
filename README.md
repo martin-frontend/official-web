@@ -1,35 +1,21 @@
-# official-web
+# Coc Official
 
-## Project setup
+## Reference
 
-```
-yarn
-```
+### Swagger
 
-### Compiles and hot-reloads for development
+<https://dev.primestar.plus/dev/coc-official-web/swagger-ui.html>
 
-```
-yarn serve
-```
+### Demo
 
-### Compiles and minifies for production
+#### dev
 
-```
-yarn build --mode <env>
-```
+<https://dev.primestar.plus/dev/coc-official-web/>
 
-### Run your unit tests
+#### qa
 
-```
-npm run test:unit
-```
+<https://qa.primestar.plus/qa/coc-official-web/>
 
-### Lints and fixes files
+### Figma
 
-```
-npm run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+<https://www.figma.com/file/iwHbUlz8oI74kh30jkAhIi/>

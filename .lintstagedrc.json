@@ -1,0 +1,7 @@
+{
+  "*.html": ["eslint --ext .html --fix"],
+  "*.scss": ["stylelint --fix"],
+  "*.vue": ["vue-cli-service lint", "prettier --write", "git add"],
+  "*.{js,ts}": ["vue-cli-service lint", "git add"],
+  "*.{json,md}": ["prettier --write"]
+}

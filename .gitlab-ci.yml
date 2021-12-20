@@ -1,0 +1,3 @@
+include:
+  - project: 'devops/coc-platform/ci-template'
+    file: 'official-frontend.yml'
