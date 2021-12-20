@@ -1,0 +1,44 @@
+.grid-table {
+  --grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+  width: 100%;
+  font-size: 16px;
+  line-height: 20px;
+
+  thead,
+  tbody {
+    tr {
+      display: grid;
+      grid-template-columns: var(--grid-template-columns);
+      align-items: center;
+      width: 100%;
+      min-height: 60px;
+      text-align: center;
+    }
+  }
+
+  thead {
+    th {
+      color: var(--primary-color);
+      font-weight: 400;
+      font-family: Noto Sans, sans-serif;
+    }
+  }
+
+  tbody {
+    display: block;
+    overflow: hidden;
+    box-sizing: border-box;
+    border: 1px solid #c1a14e;
+    border-radius: 5px;
+    font-family: Noto Sans, sans-serif;
+
+    tr {
+      background: #323232;
+
+      &:nth-child(2n) {
+        background: #000;
+      }
+    }
+  }
+}

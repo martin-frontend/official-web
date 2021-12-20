@@ -1,0 +1,16 @@
+export const USER_BASIC_INFO_I18N_KEYS = {
+  accountType: 'personal_settings.items.account_type',
+  name: 'personal_settings.items.name',
+  level: 'personal_settings.items.level',
+  birthday: 'personal_settings.items.birthday',
+  createdAt: 'personal_settings.items.registration_time',
+  lastLoginAt: 'personal_settings.items.last_login_time',
+  language: 'personal_settings.items.language',
+  email: 'personal_settings.items.email',
+  telephone: 'personal_settings.items.telephone',
+  city: 'personal_settings.items.city',
+  address: 'personal_settings.items.address',
+  status: 'personal_settings.items.status',
+  type: 'personal_settings.items.type',
+  kycLevel: 'personal_settings.items.kyc_level',
+};

@@ -1,0 +1,25 @@
+@import './mediaQuery.scss';
+
+.p-button.primary-linear-btn {
+  background: linear-gradient(180deg, #f0c879 0%, #a8772b 100%);
+
+  &:disabled {
+    background: #9e9e9e;
+  }
+
+  &:enabled:active {
+    background: var(--primary-color-active);
+  }
+
+  &:enabled:focus {
+    background: linear-gradient(180deg, #f0c879 0%, #a8772b 100%);
+
+    &:hover {
+      background: var(--primary-color);
+    }
+
+    &:enabled:active {
+      background: var(--primary-color-active);
+    }
+  }
+}

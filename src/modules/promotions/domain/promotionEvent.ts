@@ -1,0 +1,35 @@
+export interface PromotionEvent {
+  agentPlayer: boolean;
+  amount: number;
+  autoReceiveBonus: boolean;
+  betAmount: number;
+  betConsecutiveTimes: number;
+  bonusAmount: number;
+  bonusExpirationLimit: number;
+  bonusReceptionLimit: number;
+  consecutiveDays: number;
+  createdBy: number;
+  cumulativeBetAmount: number;
+  cumulativeWinAmount: number;
+  description: string;
+  endDate: number;
+  gameCategories: string[];
+  gameFeatureIds: number[];
+  gameIds: number[];
+  gameTypeIds: number[];
+  id: number;
+  imageUrl: string;
+  normalPlayer: boolean;
+  mobileImageUrl: string;
+  officialTestPlayer: boolean;
+  reacceptable: boolean;
+  recommendedPlayer: boolean;
+  remainAmount: number;
+  startDate: number;
+  status: number;
+  subtitle: string;
+  title: string;
+  tabletImageUrl: string;
+  winAmount: number;
+  winConsecutiveTimes: number;
+}

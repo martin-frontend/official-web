@@ -1,0 +1,524 @@
+{
+  "message": "hello i18n !!",
+  "sub_header": {
+    "home": "Home",
+    "balance": "Balance",
+    "rewards": "Rewards",
+    "bonuses": "Bonuses",
+    "game_history": "Game History",
+    "verification": "Verification",
+    "responsible_gambling": "Responsible Gambling",
+    "personal_settings": "Personal Settings",
+    "login_history": "Login History",
+    "refer_friend": "Refer Friend"
+  },
+  "sign_up": {
+    "address": "Address",
+    "city": "City",
+    "country": "Country",
+    "date_of_birth": "Date of birth",
+    "email_address": "Email address",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "mobile": "Mobile number",
+    "password": "Password",
+    "prefix": "Prefix",
+    "promo_code": "Promo code",
+    "zipcode": "Zip code"
+  },
+  "payment": {
+    "balance": {
+      "title": "My Balance",
+      "define": "Check all your balance amount and transaction history.",
+      "entrances": {
+        "balance": {
+          "title": "Balance"
+        },
+        "withdraw_limit": {
+          "title": "Withdraw Limit"
+        },
+        "withdrawable_balance": {
+          "title": "Withdrawable"
+        }
+      }
+    },
+    "rewards_bonus": {
+      "title": "Rewards & Bonuses",
+      "entrances": {
+        "my_rewards": {
+          "title": "My Rewards"
+        },
+        "my_bonus": {
+          "title": "My Bonus"
+        }
+      }
+    },
+    "transactions": {
+      "title": "Payment Transactions",
+      "define": "Default records is today. You can only query historical data within 3 months."
+    },
+    "history": {
+      "title": "Payment History"
+    },
+    "transaction": {
+      "kind": {
+        "SEE_ALL": "See All",
+        "SYSTEM": "System",
+        "DEPOSIT": "Deposit",
+        "WITHDRAW": "Withdraw",
+        "ACCOUNT_ADJUSTMENT": "Account Adjustment",
+        "GAME": "Game",
+        "ACHIEVEMENT": "Achievement",
+        "ACTIVITY": "Activity",
+        "WALLET_TRANSFER": "Wallet Transfer",
+        "REBATE": "Rebate"
+      }
+    },
+    "balance_withdraw": {
+      "title": "Withdraw Limit Record",
+      "define": "Only show 1 week records by default",
+      "status": {
+        "PENDING": "Pending",
+        "PASS": "Pass",
+        "REJECT": "Reject"
+      }
+    },
+    "reward": {
+      "title": "My Reward Record",
+      "define": "Default records is 3 months. You can only query historical data within 1 year.",
+      "category": {
+        "CUMULATIVE_BET_AMOUNT": "Cumulative Bet Amount",
+        "CUMULATIVE_LAUNCH_GAME_TIMES": "Cumulative Launch Times",
+        "CONSECUTIVE_LAUNCH_GAME_DAYS": "Consecutive launch Game Days",
+        "CUMULATIVE_ACHIEVEMENT_COMPLETED_TIMES": "Cumulative Achievement Completed Times",
+        "CUMULATIVE_LOGIN_TIMES": "Cumulative Login Times",
+        "CONSECUTIVE_LOGIN_DAYS": "Consecutive Login Days",
+        "CUMULATIVE_DEPOSIT_TIMES": "Cumulative Deposit Times",
+        "CUMULATIVE_DEPOSIT_AMOUNT": "Cumulative Deposit Amount",
+        "CONSECUTIVE_DEPOSIT_DAYS": "Consecutive Deposit Days",
+        "NAME_FILLING": "Name Filling",
+        "PHONE_VERIFICATION": "Phone Verification",
+        "EMAIL_VERIFICATION": "Email Verification",
+        "DEPOSIT": "Deposit",
+        "WITHDRAWAL": "Withdrawal",
+        "CREDIT_CARD_BINDING": "Credit Card Binding",
+        "WITHDRAWAL_PASSWORD_SETTING": "Withdrawal Password Setting"
+      },
+      "achievementType": {
+        "basicAchievement": "Basic Achievement",
+        "cumulativeAchievement": "Cumulative Achievement",
+        "consecutiveAchievement": "Consecutive Achievement"
+      }
+    },
+    "deposit": {
+      "title": "Payment Methods",
+      "amount_to_deposit": "Amount to Deposit",
+      "payment_details": "Payment details",
+      "deposit": "Deposit"
+    },
+    "limits": {
+      "title": "Responsible Gambling",
+      "define": "View and set limits of deposits, losses and time.",
+      "time_limit": "Time Limit",
+      "take_a_break": "Take a Break",
+      "deposit_limits": "Deposit Limits",
+      "autoplay_controls": "Autoplay Controls",
+      "ingle_settings": "Single Settings",
+      "type_of_limit": {
+        "title": "Type of Limit"
+      },
+      "reality_check": {
+        "title": "Reality Check",
+        "define": "You can change your reality check interval Interval is:",
+        "other_define": "1 hours"
+      },
+      "active_limits": {
+        "title": "Active Limits",
+        "define": "All of your active limits will show below",
+        "li_content1": "If you have more than one limit in place, the lowest limit will be valid. Example: If you have a limit of 500 a month and 200 a day, you will not be able to deposit more than 200 a day and also no more than 500 a month.",
+        "li_content2": "If you want to reduce your limit, it will be done immediately. However if you wish to increase it, you will need to wait 24 hours for this to take effect. The date of the change in limits will be visible in 'Pending Limits"
+      }
+    },
+    "my_rewards": {
+      "title": "My Rewards",
+      "define": "Here is your current rewards.",
+      "rewards": "Rewards",
+      "transferButton": "TRANSFER",
+      "achievement_quests": {
+        "title": "Achievement Quests",
+        "define": "Completed achievement quests to win rewards, don't forget to check your achievements!"
+      },
+      "grand_Achievement_quests": {
+        "title": "Grand Achievement Quests",
+        "define": "Completed achievement quests to win rewards, don't forget to check your achievements!"
+      },
+      "achievement_button": {
+        "accumulate_open_games": "Accumulate Open Games",
+        "accumulate_deposit": "Accumulate Deposit",
+        "accumulate_bet": "Accumulate Bet",
+        "special_accumulate": "Special Accumulate"
+      },
+      "dialog": {
+        "title": "Receive",
+        "button": "Confirm",
+        "message": "Successfully claim the reward"
+      },
+      "transfer_modal": {
+        "title": "Reward Points Transfer",
+        "description": "You can transfer back to main account.",
+        "my_rewards": "My Rewards：",
+        "points_used": "points used,",
+        "points_remained": "points remained.",
+        "points_redeemed": "Points can be redeemed for $1",
+        "total": "Total:",
+        "exchange_amount": "Exchange Amount$",
+        "apply": "Apply",
+        "points": "Points"
+      },
+      "toast": {
+        "title": "Points Transfer",
+        "description": "Your points transfer successful!"
+      }
+    },
+    "options": {
+      "title": "Payment Options",
+      "define": "We ensure your deposits and withdrawals are processed securely and quickly. Payment methods are country specific.We charge no fees however some non EU transfers may be subject to charges applied by processing banks."
+    },
+    "withdrawal_methods": {
+      "title": "Withdrawal Methods",
+      "define": "Here we want our players to enjoy their twinnings the way they want to! That's why we give our players multiple payment types! Please note that all processing times are valid from the moment when we initiate the payout. All payouts are initiated once all the necessary checks have been completed by our payments department."
+    },
+    "game_history": {
+      "title": "Game History",
+      "define": "Default records is 1 week. You can only query historical data within 1 month.",
+      "type_option": {
+        "SEE_ALL": "See All",
+        "SLOT": "Slot",
+        "LIVE_CASINO": "Live casino",
+        "TABLE_GAME": "Table game",
+        "SPORT": "Sport"
+      },
+      "status_option": {
+        "SUCCESS": "Success",
+        "SUCCESS_OTHER": "Success",
+        "FAILED": "Failed"
+      },
+      "button": {
+        "category": "Category",
+        "search": "Game Name"
+      }
+    },
+    "withdraw": {
+      "title": "Real Money Available",
+      "define": "Withdrawable",
+      "balance": "Balance",
+      "amount_to_withdraw": "Amount to Withdraw",
+      "payment_details": "Payment details",
+      "withdraw": "Withdraw",
+      "dialog": {
+        "setup_withdraw_password": "Setup Withdraw Password",
+        "withdraw_password": "Withdraw Password",
+        "verify_your_mobile_number": "Verify Your Mobile Number",
+        "lost_your_password": "Lost your password?",
+        "card_holder": "Card holder",
+        "card_number": "Card number",
+        "new_password": "New Password",
+        "new_password_define": "Password must be at least 8 characters,at least one digit, one uppercase letter and one lowercase letter.",
+        "confirm_new_password_placeholder": "Confirm New Password"
+      }
+    },
+    "favorite_games": {
+      "title": "Favorite games",
+      "define": "Your own personal library of games"
+    }
+  },
+  "my_bonuses": {
+    "title": "My Bonuses",
+    "define": "These are the bonuses you currently have active!",
+    "in_progress": {
+      "title": "In Progress Activity",
+      "define": "These bonuses are available for you - just click activate if you'd like to take them."
+    },
+    "activity_history": {
+      "title": "Activity History",
+      "define": "The preset record provides the bonus history within 1 week, and only display historical data within 3 months at most."
+    },
+    "dialog": {
+      "title": "Receive",
+      "button": "Confirm",
+      "message": "Successfully claim the bonuses"
+    },
+    "state": {
+      "all": "All",
+      "expired": "Expired",
+      "completed": "Completed",
+      "received": "Received"
+    },
+    "transfer_modal": {
+      "title": "My bonuses:",
+      "select_all": "Select All",
+      "validity_period": "Validity Period",
+      "bonuses": "Bonuses"
+    }
+  },
+  "common": {
+    "back_home": "Back to home",
+    "bonuses": "Bonuses",
+    "cancel": "Cancel",
+    "click": "Click",
+    "complete": "Complete",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "done": "Done",
+    "end_date": "End Date",
+    "expiring": "Expiring",
+    "get_started": "Let's get started",
+    "load_more": "Load more",
+    "max": "MAX",
+    "min": "MIN",
+    "points": "point",
+    "promotions": "Promotions",
+    "read_more": "READ MORE",
+    "receive": "Receive",
+    "reset": "Reset",
+    "save": "Save",
+    "search": "Search",
+    "send": "Send",
+    "start_date": "Start Date",
+    "state": "State",
+    "status": "Status",
+    "step": "Step",
+    "submit": "SUBMIT",
+    "type": "Type",
+    "todo": "To Do",
+    "view": "View",
+    "unlimited": "Unlimited",
+    "update": "Update",
+    "update_password": "UPDATE PASSWORD",
+    "copy": "COPY"
+  },
+  "paymentshistory": {
+    "title": "Transactions History",
+    "define": "Default records is Today. You can only query historical data within 3 months.",
+    "option": {
+      "see_all": "See All",
+      "successful": "Successful",
+      "failed": "Failed",
+      "pending": "Pending",
+      "Apply_Processing": "Apply Processing",
+      "Apply_Successed": "Apply Successed",
+      "Apply_Failed": "Apply Failed",
+      "Withdraw_Failed": "Withdraw Failed",
+      "Withdraw_Processing": "Withdraw Processing",
+      "Withdraw_Successed": "Withdraw Successed"
+    },
+    "status": {
+      "UnFinished": "Failed",
+      "Failed": "Failed",
+      "OtherException": "Failed",
+      "BuildSignError": "Failed",
+      "SignError": "Failed",
+      "AmountError": "Failed",
+      "InvalidRequest": "Failed",
+      "NotSupportQueryOrder": "Failed",
+      "IllegalIP": "Failed",
+      "TradenoError": "Failed",
+      "Unpaid": "Pending",
+      "OK": "Successful",
+      "TEST": "Failed"
+    },
+    "withdrawStatus": {
+      "Pending": "Withdraw Processing",
+      "Pass": "Withdraw Successed",
+      "Refuse": "Withdraw Failed"
+    }
+  },
+  "bonusesHistory": {
+    "title": "My Bonuses Record",
+    "define": "Default records is 1 month. You can only query historical data within 3 months.",
+    "status": {
+      "System": "System",
+      "Deposit": "Deposit",
+      "Withdraw": "Withdrawal",
+      "Reconciliation": "Account Adjustment",
+      "Game": "Game",
+      "Task": "Mission",
+      "Activity": "Activity",
+      "WalletTransfer": "Wallet Transfer",
+      "level": "level"
+    },
+    "activityType": {
+      "Open_Game_Consecutive": "Open Game Consecutive",
+      "Open_Game": "Open Game",
+      "Bet_Consecutive": "Bet Consecutive",
+      "Bet": "Bet"
+    },
+    "activityTarget": {
+      "Consecutive": "Consecutive",
+      "Open_Game": "Open Game",
+      "Bet": "Bet"
+    }
+  },
+  "loginhistory": {
+    "title": "Login History",
+    "define": "Check how active you've been"
+  },
+  "personal_settings": {
+    "title": "Personal Settings",
+    "define": "Your personal details and preferences.",
+    "basic_information": {
+      "title": "Basic Information"
+    },
+    "contact_information": {
+      "title": "Contact Information"
+    },
+    "very_identiy": {
+      "title": "Verify Your Identity"
+    },
+    "items": {
+      "name": "Name",
+      "level": "Player Level",
+      "birthday": "Birthday",
+      "registration_time": "Registration time",
+      "last_login_time": "Last Login Time",
+      "language": "Language",
+      "email": "Email",
+      "telephone": "Telephone",
+      "city": "Country",
+      "address": "Address",
+      "status": "Status",
+      "account_type": "Account Type",
+      "kyc_level": "KYC Level"
+    },
+    "consents": {
+      "title": "Your Consents",
+      "subtitle": "Let's stay in touch!"
+    },
+    "checkopts": {
+      "accept_terms": "I consent to receive details of special offers, news, promotions and other marketing communications by email and mobile notification. I understand that I can always unsubscribe at any time."
+    },
+    "warning": "Your personal details and supporting document info must be an exact match.",
+    "reminder": "Please contact support to update read only fields.",
+    "verify_your_phone": "Verify your mobile number",
+    "verify_your_email": "Please click on the link that has just been sent to your email and continue registration process.",
+    "send_verification_link": "A verification link has been sent to your email account.",
+    "otp_expired": "The OTP will be expired in",
+    "didnt_receive_otp": "Didn’t receive the verification OTP ?",
+    "resend_otp": "Resend OTP",
+    "incarrect_otp": "Incarrect OTP",
+    "have_verified_mobile_number": "You have verified mobile number",
+    "this_day": "this day",
+    "update_contant": "Update Contant",
+    "verify_failed": "Verify Failed",
+    "verify_phone_successfully": "Verify phone Successfully.",
+    "may_not_be_saved": "Changes you made may not be saved.",
+    "verified_email_successfully": "Verified e-mail successfully",
+    "account_and_security": "Account and Security",
+    "account_and_security_message": "Make your password stronger,or change it if someone else knows it."
+  },
+  "kyc_verified": {
+    "title": "Verify Your Identity (KYC)",
+    "define": "We need to verify your account for you to be able to make withdrawals.",
+    "steps": [
+      {
+        "title": "Proof of identification",
+        "content": {
+          "identity": {
+            "title": "Identity",
+            "depiction": "Passport, driver's license, or other official document replacing them"
+          },
+          "identity_back": {
+            "title": "Identity (Back)",
+            "depiction": "Passport, driver's license, or other official document replacing them"
+          },
+          "selfie_id": {
+            "title": "Selfie & ID",
+            "depiction": "Your selfie with passport/ID in your hands. It should be a single photo so please make sure both your face and passport info are well recognizable and don't overlap each other."
+          }
+        }
+      },
+      {
+        "title": "Proof of Adress",
+        "content": {
+          "address": {
+            "title": "Address",
+            "depiction": "Please finish preliminary identity verification first!"
+          }
+        }
+      }
+    ],
+    "verifying": [
+      "We have received your data and will process it within 3-7days working days.",
+      "You will receivee a confirmation e-mail once the verification is complete."
+    ],
+    "approved": "Your passport / driver's license / official document has been approved.",
+    "rejected": "Your document has been rejected. Please reload again . If you have any question, please contact customer service. Thank you.",
+    "upload": {
+      "title": "Drag and drop file here or Browse",
+      "define": "Support formats: PDF, JPG or PNG.",
+      "max_size": "Max size 10MB"
+    },
+    "confirm": "We have received your withdrawal request and we will process it for you as soon as possible."
+  },
+  "get_in_touch": {
+    "title": "Send Us a Message",
+    "lable": {
+      "email": "email",
+      "name": "name",
+      "subject": "subject",
+      "message": "message"
+    },
+    "information": {
+      "email": {
+        "title": "Email",
+        "content": "Email us either through the form or direct at ...",
+        "description": "EMAIL US"
+      },
+      "chat": {
+        "title": "Chat",
+        "content": "Chat with us for twinstant attention",
+        "description": "CHAT WITH US"
+      },
+      "faq": {
+        "title": "FAQ",
+        "content": "Need Help?Check out our FAQ or contact us by using any of the below options.",
+        "description": "READ ALL FAQ HERE"
+      }
+    }
+  },
+  "recommend": {
+    "title": "Recommended for you",
+    "input": "Game name"
+  },
+  "account_and_security": {
+    "title": "Account and Security",
+    "define": "Make your password stronger, or change it if someone else knows it.",
+    "change_password": "Change Password",
+    "change_password_define": "Change my account password",
+    "change_password_page_define": "Password must be at least 8 characters,at least one digit, one uppercase letter and one lowercase letter.",
+    "withdraw_password": "Withdraw Password",
+    "withdraw_password_define": "Change my withdraw password",
+    "change_withdraw_password": "Change withdraw Password",
+    "change_withdraw_password_define": "Password must be 6 digits.",
+    "old_password": "Old Password",
+    "old_password_error": "Password don't match.",
+    "withdraw_old_password_error": "Password don't match.",
+    "new_password": "New Password",
+    "new_password_error1": "Password must be at least 8 characters long and contain a minimum of one lower case letter, one upper case letter, one number. Passsword can contain special character",
+    "new_password_error2": "New password must be different from current password.",
+    "withdraw_new_password": "The current password is incorrect or the new password is invalid",
+    "withdraw_new_password_error1": "Password must be 6 digits numbers.",
+    "withdraw_new_password_error2": "New password must be different from current password.",
+    "confirm_new_password": "Confrim new password.",
+    "confirm_new_password_error": "The password don't match."
+  },
+  "refer_friend": {
+    "title": "Refer Friend",
+    "define": "Share The Code With Friend To Get 50 CAD!",
+    "bonus_terms": "Bonus Terms & Сonditions",
+    "total_referrals": "TOTAL REFERRALS",
+    "reward": "Reward",
+    "invitation": "Invitation",
+    "panding": "Panding"
+  }
+}
