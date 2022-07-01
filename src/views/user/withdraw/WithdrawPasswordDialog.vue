@@ -1,110 +1,122 @@
 <template>
   <teleport to="#app">
-    <div v-show="isShown" class="withdraw-password-dialog">
-      <div class="dialog">
-        <CloseButton @click="onClickCancle" />
+    <div
+      :style="{
+        'z-index': zIndex,
+      }"
+      class="withdraw-password-dialog"
+    >
+      <transition name="scale">
+        <div v-if="isShown" class="dialog">
+          <CloseButton @click="onClickCancle" />
 
-        <template v-if="curDialogType === DialogType.WithdrawalInformation">
-          <div class="logo-img">
-            <img :src="`${imagePath}${logoUrl}`" />
-          </div>
-          <div class="input-group">
-            <div class="p-input-filled">
-              <span class="p-float-label">
-                <InputText v-model="cardHolderInput" />
-                <label>{{ t('payment.withdraw.dialog.card_holder') }}</label>
-              </span>
+          <template v-if="curDialogType === DialogType.WithdrawalInformation">
+            <div class="logo-img">
+              <img :src="`${imagePath}${logoUrl}`" />
             </div>
-            <div class="p-input-filled">
-              <span class="p-float-label">
-                <InputText v-model="cardNumberInput" />
-                <label>{{ t('payment.withdraw.dialog.card_number') }}</label>
-              </span>
+            <div class="input-group">
+              <div class="p-input-filled">
+                <span class="p-float-label">
+                  <InputText v-model="cardHolderInput" />
+                  <label>{{ t('payment.withdraw.dialog.card_holder') }}</label>
+                </span>
+              </div>
+              <div class="p-input-filled">
+                <span class="p-float-label">
+                  <InputText v-model="cardNumberInput" />
+                  <label>{{ t('payment.withdraw.dialog.card_number') }}</label>
+                </span>
+              </div>
             </div>
-          </div>
-        </template>
+          </template>
 
-        <template v-else-if="curDialogType === DialogType.NewPassword">
-          <div class="dialog-title">
-            {{ title }}
-          </div>
-          <div class="dialog-define">
-            {{ t('payment.withdraw.dialog.new_password_define') }}
-          </div>
-          <div class="input-group">
-            <div class="p-input-filled">
-              <span class="p-float-label">
-                <InputText v-model="newPasswordInput" />
-                <label>{{ t('payment.withdraw.dialog.new_password') }}</label>
-              </span>
+          <template v-else-if="curDialogType === DialogType.NewPassword">
+            <div class="dialog-title">
+              {{ title }}
             </div>
-            <div class="p-input-filled">
-              <span class="p-float-label">
-                <InputText v-model="confirmNewPasswordInput" />
-                <label>
-                  {{
-                    t(
-                      'payment.withdraw.dialog.confirm_new_password_placeholder'
-                    )
-                  }}
-                </label>
-              </span>
+            <div class="dialog-define">
+              {{ t('payment.withdraw.dialog.new_password_define') }}
             </div>
-          </div>
-        </template>
+            <div class="input-group">
+              <div class="p-input-filled">
+                <span class="p-float-label">
+                  <InputText v-model="newPasswordInput" />
+                  <label>{{ t('payment.withdraw.dialog.new_password') }}</label>
+                </span>
+              </div>
+              <div class="p-input-filled">
+                <span class="p-float-label">
+                  <InputText v-model="confirmNewPasswordInput" />
+                  <label>
+                    {{
+                      t(
+                        'payment.withdraw.dialog.confirm_new_password_placeholder'
+                      )
+                    }}
+                  </label>
+                </span>
+              </div>
+            </div>
+          </template>
 
-        <template v-else>
-          <div class="dialog-title">
-            {{ title }}
-          </div>
+          <template v-else>
+            <div class="dialog-title">
+              {{ title }}
+            </div>
 
-          <div
-            v-show="curDialogType === DialogType.VerifyYourMobileNumber"
-            class="otp-container"
+            <div
+              v-show="curDialogType === DialogType.VerifyYourMobileNumber"
+              class="otp-container"
+            >
+              <IconBase
+                class="icon"
+                :width="60"
+                :height="60"
+                viewBox="0 0 60 60"
+              >
+                <IconOTP />
+              </IconBase>
+              <ul>
+                <li>{{ 'The OTP will be expired in 5:00' }}</li>
+                <li>{{ '您已使用每日OTP次數1/3次' }}</li>
+              </ul>
+            </div>
+
+            <div class="input-group">
+              <InputBox
+                v-model="passwordInput"
+                :is-error="!!errorMessage && !passwordInput"
+                :error-message="errorMessage"
+                class="input"
+              />
+            </div>
+          </template>
+
+          <Button
+            class="confirm-button"
+            :disabled="isDisabled"
+            @click="onClickConfirm"
           >
-            <IconBase class="icon" :width="60" :height="60" viewBox="0 0 60 60">
-              <IconOTP />
-            </IconBase>
-            <ul>
-              <li>{{ 'The OTP will be expired in 5:00' }}</li>
-              <li>{{ '您已使用每日OTP次數1/3次' }}</li>
-            </ul>
-          </div>
+            {{ confirmButtonText }}
+          </Button>
 
-          <div class="input-group">
-            <InputBox
-              v-model="passwordInput"
-              :is-error="!!errorMessage && !passwordInput"
-              :error-message="errorMessage"
-              class="input"
-            />
-          </div>
-        </template>
+          <u
+            v-show="curDialogType === DialogType.WithdrawPassword"
+            class="lost-password"
+            @click="showNewPasswordDialog"
+          >
+            {{ t('payment.withdraw.dialog.lost_your_password') }}
+          </u>
 
-        <Button
-          class="confirm-button"
-          :disabled="isDisabled"
-          @click="onClickConfirm"
-        >
-          {{ confirmButtonText }}
-        </Button>
-
-        <u
-          v-show="curDialogType === DialogType.WithdrawPassword"
-          class="lost-password"
-          @click="showNewPasswordDialog"
-        >
-          {{ t('payment.withdraw.dialog.lost_your_password') }}
-        </u>
-
-        <p
-          v-show="curDialogType === DialogType.VerifyYourMobileNumber"
-          class="otp-text"
-        >
-          {{ 'Didn’t receive the verification OTP?' }}
-          <u>{{ 'Resend OTP' }}</u>
-        </p>
-      </div>
+          <p
+            v-show="curDialogType === DialogType.VerifyYourMobileNumber"
+            class="otp-text"
+          >
+            {{ 'Didn’t receive the verification OTP?' }}
+            <u>{{ 'Resend OTP' }}</u>
+          </p>
+        </div>
+      </transition>
     </div>
   </teleport>
 </template>
@@ -126,6 +138,8 @@ import {
   createPaymentApplicationForm,
   withdrawalPasswordVerification,
 } from '@/modules/withdraw/infrastructure/api/getPaymentMethodApi';
+import { getOtpLimitation } from '@/modules/otp/infrastracture/otp.api';
+import { OtpTiming } from '@/modules/otp/domain/otpTiming';
 
 const { t } = useI18n();
 const imagePath = `${process.env.VUE_APP_IMAGE_DOMAIN}/file?path=`;
@@ -146,6 +160,7 @@ const {
   // isLostPasswordShown,
   confirmButtonText,
   curDialogType,
+  zIndex,
 } = toRefs(withdrawPasswordStore);
 
 const isDisabled = computed(() => {
@@ -171,6 +186,8 @@ const resetValue = () => {
   errorMessage.value = '';
 };
 
+const verifyCallback = ref<() => Promise<unknown> | undefined>();
+
 function onClickCancle() {
   withdrawPasswordStore.close();
   resetValue();
@@ -182,7 +199,10 @@ const setupWithdrawPasswordEvent = () => {
     confirmButtonText: t('common.submit'),
     curDialogType: DialogType.VerifyYourMobileNumber,
   });
-  passwordInput.value = '';
+
+  getOtpLimitation(OtpTiming.FIRST_SET_PLAYER_WITHDRAWAL_PASSWORD);
+
+  // passwordInput.value = '';
 };
 
 const showNewPasswordDialog = () => {
@@ -191,18 +211,19 @@ const showNewPasswordDialog = () => {
     confirmButtonText: t('common.confirm'),
     curDialogType: DialogType.NewPassword,
   });
+
   passwordInput.value = '';
 };
 
 const verifyYourMobileNumberEvent = () => {
-  onClickCancle();
+  // onClickCancle();
+  verifyCallback.value?.();
 };
 
 const withdrawPasswordEvent = async () => {
   try {
-    const res = await withdrawalPasswordVerification(passwordInput.value);
+    await withdrawalPasswordVerification(passwordInput.value);
     withdrawPasswordStore.withdrawalPassword = passwordInput.value;
-    console.log(res);
 
     withdrawPasswordStore.popUp({
       confirmButtonText: t('payment.withdraw.withdraw'),
@@ -269,6 +290,16 @@ const onClickConfirm = () => {
 
 <style lang="scss" scoped>
 @import '@/styles/breakpoints.scss';
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.3s;
+}
+
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
+}
 .withdraw-password-dialog {
   position: fixed;
   top: 0;

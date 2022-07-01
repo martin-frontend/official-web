@@ -28,7 +28,7 @@
   },
   "payment": {
     "balance": {
-      "title": "My Balance",
+      "title": "Wallet",
       "define": "Check all your balance amount and transaction history.",
       "entrances": {
         "balance": {
@@ -49,7 +49,7 @@
           "title": "My Rewards"
         },
         "my_bonus": {
-          "title": "My Bonus"
+          "title": "Bonus"
         }
       }
     },
@@ -166,7 +166,7 @@
       "transfer_modal": {
         "title": "Reward Points Transfer",
         "description": "You can transfer back to main account.",
-        "my_rewards": "My Rewards：",
+        "my_rewards": "My Rewards: ",
         "points_used": "points used,",
         "points_remained": "points remained.",
         "points_redeemed": "Points can be redeemed for $1",
@@ -252,8 +252,9 @@
       "all": "All",
       "expired": "Expired",
       "completed": "Completed",
-      "received": "Received"
+      "received": "Receive"
     },
+    "transfer_title": "Bonus Points Transfer",
     "transfer_modal": {
       "title": "My bonuses:",
       "select_all": "Select All",
@@ -276,26 +277,30 @@
     "load_more": "Load more",
     "max": "MAX",
     "min": "MIN",
+    "notice": "Notice",
     "points": "point",
     "promotions": "Promotions",
-    "read_more": "READ MORE",
+    "read_more": "Read more",
     "receive": "Receive",
+    "required": "Required",
     "reset": "Reset",
     "save": "Save",
     "search": "Search",
     "send": "Send",
+    "start": "START",
     "start_date": "Start Date",
     "state": "State",
     "status": "Status",
     "step": "Step",
-    "submit": "SUBMIT",
+    "submit": "Submit",
     "type": "Type",
     "todo": "To Do",
     "view": "View",
     "unlimited": "Unlimited",
     "update": "Update",
     "update_password": "UPDATE PASSWORD",
-    "copy": "COPY"
+    "copy": "COPY",
+    "delete": "Delete"
   },
   "paymentshistory": {
     "title": "Transactions History",
@@ -397,22 +402,26 @@
     "checkopts": {
       "accept_terms": "I consent to receive details of special offers, news, promotions and other marketing communications by email and mobile notification. I understand that I can always unsubscribe at any time."
     },
-    "warning": "Your personal details and supporting document info must be an exact match.",
-    "reminder": "Please contact support to update read only fields.",
-    "verify_your_phone": "Verify your mobile number",
-    "verify_your_email": "Please click on the link that has just been sent to your email and continue registration process.",
-    "send_verification_link": "A verification link has been sent to your email account.",
-    "otp_expired": "The OTP will be expired in",
-    "didnt_receive_otp": "Didn’t receive the verification OTP ?",
-    "resend_otp": "Resend OTP",
-    "incarrect_otp": "Incarrect OTP",
+    "didnt_receive_otp": "Didn't receive the verification OTP ?",
     "have_verified_mobile_number": "You have verified mobile number",
-    "this_day": "this day",
-    "update_contant": "Update Contant",
+    "incarrect_otp": "Incarrect OTP",
+    "may_not_be_saved": "Changes you made may not be saved.",
+    "otp_expired": "The OTP will be expired in",
+    "reminder": "Please contact support to update read only fields.",
+    "resend_otp": "Resend OTP",
+    "update_contant": "Update contant",
+    "update_name": "Update name",
+    "update_name_note": "Note: You can only update your name once.",
+    "update_name_warning": "If you update your name, you have to reload your KYC identify !",
+    "update_successfully": "Update Successfully",
     "verify_failed": "Verify Failed",
     "verify_phone_successfully": "Verify phone Successfully.",
-    "may_not_be_saved": "Changes you made may not be saved.",
+    "verify_your_phone": "Verify your mobile number",
+    "verify_your_email": "Please click on the link that has just been sent to your email and continue registration process.",
     "verified_email_successfully": "Verified e-mail successfully",
+    "send_verification_link": "A verification link has been sent to your email account.",
+    "this_day": "this day",
+    "warning": "Your personal details and supporting document info must be an exact match.",
     "account_and_security": "Account and Security",
     "account_and_security_message": "Make your password stronger,or change it if someone else knows it."
   },
@@ -510,7 +519,11 @@
     "withdraw_new_password_error1": "Password must be 6 digits numbers.",
     "withdraw_new_password_error2": "New password must be different from current password.",
     "confirm_new_password": "Confrim new password.",
-    "confirm_new_password_error": "The password don't match."
+    "confirm_new_password_error": "The password don't match.",
+    "withdrawal_account": "Withdrawal Account",
+    "change_my_withdrawal_account": "Change My Withdrawal Account",
+    "my_withdrawal_account": "My Withdrawal Account",
+    "email_password_error": "Email don't match."
   },
   "refer_friend": {
     "title": "Refer Friend",
@@ -520,5 +533,36 @@
     "reward": "Reward",
     "invitation": "Invitation",
     "panding": "Panding"
+  },
+  "my_withdrawal_account": {
+    "title": "My Withdrawal Account",
+    "account_management": "Account Management",
+    "remind": "Please add a withdrawal account to make withdrawals",
+    "toast": {
+      "title": "Change Withdrawal Account",
+      "description": "You have successfully deleted the card"
+    },
+    "delete": "Delete Account",
+    "delete_account_dialog": {
+      "message": "Are you sure you want to delete your last bank account ?"
+    },
+    "label": {
+      "account_name": "Account Name",
+      "account_number": "Account Number",
+      "bank_name": "Bank Name",
+      "bank_branch_city": "Bank Branch City",
+      "branch_name": "Branch Name"
+    },
+    "add_account": "Add Account"
+  },
+  "history": {
+    "label": "Histroty"
+  },
+  "my_account": {
+    "label": "My Account"
+  },
+  "form_message": {
+    "required": "This field is required.",
+    "phnoe_number": "Phone number don't match."
   }
 }

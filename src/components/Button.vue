@@ -129,9 +129,17 @@ withDefaults(defineProps<ButtonProps>(), {
 
   &.medium {
     min-width: 100px;
-    height: 50px;
+    padding: 16px 0;
     font-size: 16px;
     line-height: 20px;
+
+    @include mobile {
+      min-width: 80px;
+      padding: 11px 0;
+      min-height: 32px;
+      font-size: 14px;
+      line-height: 16px;
+    }
   }
 
   &.large {

@@ -1,6 +1,7 @@
 <template>
   <div class="p-input-filled">
     <div class="input-container p-float-label">
+      <slot name="icon" />
       <input
         :value="modelValue"
         :type="type"
@@ -15,7 +16,6 @@
         @input="input($event)"
       />
       <label :class="{ 'error-label': isError }">{{ label }}</label>
-      <slot name="icon" />
     </div>
     <p v-show="isError" class="error-message">
       {{ errorMessage }}

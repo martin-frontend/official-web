@@ -1,5 +1,5 @@
 <template>
-  <Container class="deposit-container">
+  <div class="deposit-container">
     <Heading :title="t('payment.deposit.title')" />
     <Collapse
       v-for="({ id, paymentMerchantId }, index) of paymentMethods"
@@ -55,7 +55,7 @@
         </div>
       </div>
     </Collapse>
-  </Container>
+  </div>
 
   <DepositThirdPartyDialog
     v-if="isThirdPartyDialogShown"
@@ -76,7 +76,6 @@ import { getDepositPaymentMethod } from '@/modules/deposit/application/depositPa
 import { DepositPaymentMethod } from '@/modules/deposit/domain/paymentMethods';
 import { createPaymentOrder } from '@/modules/deposit/application/createPaymentOreder';
 import DepositThirdPartyDialog from './DepositThirdPartyDialog.vue';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 
 const { t } = useI18n();
@@ -110,7 +109,7 @@ async function clickDeposit(index: number, paymentMerchantId: string) {
   urlOf3rdParty.value = path;
   timeId = setTimeout(() => {
     isThirdPartyDialogShown.value = false;
-    router.push('/user/payments-history');
+    router.push('/user/history/deposit-history');
   }, 3000);
 }
 function closeThirdPartyDialog() {
@@ -128,11 +127,11 @@ function completeThirdPartyDialog() {
 @import '@/styles/breakpoints.scss';
 .deposit-container {
   max-width: 720px;
-  padding: 70px 0;
+  // padding: 70px 0;
 
-  @include mobile {
-    padding: 70px 40px;
-  }
+  // @include mobile {
+  //   padding: 70px 40px;
+  // }
 }
 
 .logo-box {
@@ -157,6 +156,7 @@ function completeThirdPartyDialog() {
     color: var(--primary-color);
     font-size: 16px;
     line-height: 20px;
+    text-align: left;
   }
 
   .p-button {

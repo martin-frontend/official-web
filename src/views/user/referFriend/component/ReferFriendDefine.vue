@@ -46,6 +46,7 @@ const { requirementDepositAmount, requirementBetAmount, reward } =
 @import '@/styles/breakpoints.scss';
 .bulletin {
   padding: 32px;
+  text-align: left;
   .define-title {
     font-size: 26px;
     line-height: 26px;

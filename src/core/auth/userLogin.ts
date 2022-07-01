@@ -1,7 +1,7 @@
 import loginApi, {
   logoutApi,
   closeSubscribe,
-  startSubscribe,
+  // startSubscribe,
 } from '@/core/auth/authApi';
 import setAuthToken from '@/core/services/localStorage/authToken';
 import useDialogStore from '@/core/shared/dialogStore';
@@ -22,7 +22,7 @@ export default async function userLogin(
     setAuthToken(token);
 
     checkUserStatus();
-    startSubscribe();
+    // startSub scribe();
 
     return '';
   } catch (error) {

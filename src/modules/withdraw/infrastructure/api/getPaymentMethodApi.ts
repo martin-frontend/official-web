@@ -71,3 +71,10 @@ export async function createPaymentApplicationForm(
 
   return response;
 }
+
+export function setupWithdrawPassword(dto: {
+  password: string;
+  token: string;
+}) {
+  return fetchPost<string>('/official/v1/player/withdrawal-password', dto);
+}

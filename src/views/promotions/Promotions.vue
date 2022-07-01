@@ -73,6 +73,7 @@
   <PromotionDialog
     v-model:visible="displayModal"
     :promotion-event="promotion"
+    :is-promotion-page="isPromotionPage"
     @close="close"
   />
 </template>
@@ -91,6 +92,7 @@ import PromotionDialog from '@/modules/promotions/ui/PromotionDialog.vue';
 
 const { t } = useI18n();
 const displayModal = ref(false);
+const isPromotionPage = true;
 const imagePath = `${process.env.VUE_APP_IMAGE_DOMAIN}/file?path=`;
 
 const promotionsStore = usePromotionsStore();

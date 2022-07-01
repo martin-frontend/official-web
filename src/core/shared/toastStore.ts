@@ -5,24 +5,25 @@ interface ToastStoreState {
   timeIdArr: number[];
 }
 
-interface ToastDto {
-  toastTitle: string;
-  toastDescription: string;
-
-  color: TypographyColor;
-  isIconInfoCircle: boolean;
-  isIconCheckCircle: boolean;
-  isIconBan: boolean;
-  toastId: number;
+export interface ToastDto {
+  toastTitle?: string;
+  toastDescription?: string;
+  color?: TypographyColor;
+  isIconInfoCircle?: boolean;
+  isIconCheckCircle?: boolean;
+  isIconBan?: boolean;
+  isIconError?: boolean;
+  toastId?: number;
 }
 
 export const defaultToast: ToastDto = {
   toastTitle: '',
   toastDescription: '',
-  color: 'danger',
+  color: 'success',
   isIconInfoCircle: false,
   isIconCheckCircle: false,
   isIconBan: false,
+  isIconError: false,
   toastId: 0,
 };
 
@@ -38,7 +39,7 @@ const useToastStore = defineStore('toast', {
   actions: {
     addToastMessage(toast: ToastDto) {
       // index 會從1開始
-      const index = this.toastContent.push(toast);
+      const index = this.toastContent.push({ ...defaultToast, ...toast });
 
       const contentIndex = index - 1;
 

@@ -12,7 +12,7 @@
     <div class="footer__assert">
       <p>
         {{
-          'This website is managed and operated by PrimeStar COC (reg.number AB 123456) with registered office located at AddressAddressAddress as a Billing Agent and operated by TechSolutions Group N.V. as a licence holder (1234/ABC2021-123) with address at AddressAddressAddress. PrimeStar COC license No. 00123 issued on 19th of May 2021.'
+          'The website is owned by Miragetech B.V. , registration no 158882,registered address is at Dr. M.J. Hugenholtzweg 25, Unit 11 Curacao.'
         }}
       </p>
     </div>
@@ -24,45 +24,40 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-// 若為玩遊戲頁面（路徑包括'gamePlay'），則不顯示 footer
 const isShown = computed<boolean>(() => !route.path.includes('gamePlay'));
 
 const list = [
   {
-    name: 'About Us',
-    path: 'about-us',
+    name: 'Terms of Service',
+    path: 'terms-of-service',
   },
   {
-    name: 'Careers',
-    path: 'careers',
-  },
-  {
-    name: 'Security & Privacy Policy',
-    path: 'security-privacy-policy',
-  },
-  {
-    name: 'Responsible Gambling',
+    name: 'Responsible Gaming terms',
     path: 'responsible-gambling',
   },
   {
-    name: 'Terms of Use',
-    path: 'terms-of-use',
+    name: 'Self-Exclusion terms',
+    path: 'seif-exclusion-terms',
   },
   {
-    name: 'Game Rules',
-    path: 'game-rules',
+    name: 'Dispute Resolution terms',
+    path: 'dispute-resolution-terms',
   },
   {
-    name: 'Bonus Terms',
-    path: 'bonus-terms',
+    name: 'AML Policy',
+    path: 'aml-policy',
   },
   {
-    name: 'Payment Options',
-    path: 'payment-options',
+    name: 'KYC Policies、Data Policies',
+    path: 'kyc-data-policies',
   },
   {
-    name: 'Get in Touch',
-    path: 'get-in-touch',
+    name: 'Terms of Accounts',
+    path: 'terms-of-accounts',
+  },
+  {
+    name: 'Certification',
+    path: 'certification',
   },
 ];
 </script>

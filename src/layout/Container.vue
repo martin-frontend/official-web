@@ -9,12 +9,13 @@
 
 .container {
   box-sizing: border-box;
-  max-width: 1360px;
+  max-width: 1530px;
   margin: 0 auto;
-  padding: 96px 40px 100px 40px;
+  padding: 40px 40px 100px 40px;
+  text-align: center;
 
   @include mobile {
-    padding: 64px 20px 100px 20px;
+    padding: 16px 20px 100px 20px;
   }
 }
 </style>

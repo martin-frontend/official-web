@@ -13,6 +13,7 @@ export async function settingWithdrawalPassword(
   }
 }
 
+// 需增加 emailLinkUrlPath
 // export async function forgotPassword(): Promise<WithdrawalPaymentMethodDto> {
 //   const response: WithdrawalPaymentMethodDto =
 //     await fetchPost<WithdrawalPaymentMethodDto>(

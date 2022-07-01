@@ -1,116 +1,56 @@
 <template>
-  <Container>
+  <div>
     <div class="bonus-block-group">
       <Heading
         :title="t('account_and_security.change_password')"
         :define="t('account_and_security.change_password_page_define')"
       />
-      <InputBox
+      <PasswordInputBox
         v-model="oldPassword"
         :label="t('account_and_security.old_password')"
-        :type="isOldPasswordShown ? 'text' : 'password'"
         :error-message="t('account_and_security.old_password_error')"
         :is-error="isOldPasswordError"
-      >
-        <template #icon>
-          <div
-            class="password-text-hidden-switcher"
-            @click="toggleOldPasswordShown"
-          >
-            <IconBase
-              :width="24"
-              :height="24"
-              viewBox="0 0 24 24"
-              icon-color="black"
-            >
-              <IconShowInfo v-if="isOldPasswordShown" />
-              <IconHideInfo v-else />
-            </IconBase>
-          </div>
-        </template>
-      </InputBox>
-      <InputBox
+      />
+      <PasswordInputBox
         v-model="newPassword"
         :label="t('account_and_security.new_password')"
-        :type="isNewPasswordShown ? 'text' : 'password'"
         :is-error="isNewPasswordError"
         :error-message="isNewPasswordErrorMessage"
-      >
-        <template #icon>
-          <div
-            class="password-text-hidden-switcher"
-            @click="toggleNewPasswordShown"
-          >
-            <IconBase
-              :width="24"
-              :height="24"
-              viewBox="0 0 24 24"
-              icon-color="black"
-            >
-              <IconShowInfo v-if="isNewPasswordShown" />
-              <IconHideInfo v-else />
-            </IconBase>
-          </div>
-        </template>
-      </InputBox>
-      <InputBox
+      />
+      <PasswordInputBox
         v-model="confrimPassword"
         :label="t('account_and_security.confirm_new_password')"
-        :type="isConfrimPasswordShown ? 'text' : 'password'"
         :error-message="t('account_and_security.confirm_new_password_error')"
         :is-error="isConfrimPasswordError"
-      >
-        <template #icon>
-          <div
-            class="password-text-hidden-switcher"
-            @click="toggleConfirmPasswordShown"
-          >
-            <IconBase
-              :width="24"
-              :height="24"
-              viewBox="0 0 24 24"
-              icon-color="black"
-            >
-              <IconShowInfo v-if="isConfrimPasswordShown" />
-              <IconHideInfo v-else />
-            </IconBase>
-          </div>
-        </template>
-      </InputBox>
+      />
       <Button
         class="update-button"
         color="primary"
         variant="block"
+        :disabled="disabled"
         @click="updatePassword"
       >
         {{ t('common.update_password') }}
       </Button>
     </div>
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
-import IconBase from '@/components/icons/IconBase.vue';
-import IconHideInfo from '@/components/icons/IconHideInfo.vue';
-import IconShowInfo from '@/components/icons/IconShowInfo.vue';
 import Button from '@/components/Button.vue';
-import InputBox from '@/components/InputBox.vue';
 import { modifyPlayerPassword } from '@/modules/changePassword/infrastructure/api/passwordApi';
-import useToastStore, { defaultToast } from '@/core/shared/toastStore';
+import useToastStore from '@/core/shared/toastStore';
+import { passwordValidator } from '@/modules/changePassword/application/changePassword';
+import PasswordInputBox from '@/components/PasswordInputBox.vue';
 
 // use i18n
 const { t } = useI18n();
-// Aa1123456#
 const oldPassword = ref('');
 const newPassword = ref('');
 const confrimPassword = ref('');
-const isOldPasswordShown = ref(false);
-const isNewPasswordShown = ref(false);
-const isConfrimPasswordShown = ref(false);
 const isOldPasswordError = ref(false);
 const isNewPasswordError = ref(false);
 const isConfrimPasswordError = ref(false);
@@ -118,28 +58,15 @@ const isNewPasswordErrorMessage = ref('');
 
 const toastStore = useToastStore();
 
-const toggleOldPasswordShown = () => {
-  isOldPasswordShown.value = !isOldPasswordShown.value;
-};
-
-const toggleNewPasswordShown = () => {
-  isNewPasswordShown.value = !isNewPasswordShown.value;
-};
-
-const toggleConfirmPasswordShown = () => {
-  isConfrimPasswordShown.value = !isConfrimPasswordShown.value;
-};
-
-const validator = (value: string) => {
-  const regex = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@#$%^&+=?!:~_-]{8,}/;
-  return regex.test(value);
-};
+const disabled = computed(
+  () => !oldPassword.value || !newPassword.value || !confrimPassword.value
+);
 
 const confirmInputContentFormat = () => {
   isOldPasswordError.value = !oldPassword.value;
 
   isNewPasswordError.value =
-    !validator(newPassword.value) ||
+    !passwordValidator(newPassword.value) ||
     !newPassword.value ||
     oldPassword.value === newPassword.value;
 
@@ -178,10 +105,9 @@ const updatePassword = async () => {
       newPassword: newPassword.value,
     });
 
-    const toast = { ...defaultToast };
-    toast.toastDescription = 'Your password has been revised successfully.';
-    toast.color = 'success';
-    toastStore.addToastMessage(toast);
+    toastStore.addToastMessage({
+      toastDescription: 'Your password has been revised successfully.',
+    });
   } catch (err) {
     isOldPasswordError.value = true;
     console.log(err);
@@ -193,13 +119,17 @@ const updatePassword = async () => {
 
 <style lang="scss" scoped>
 @import '@/styles/breakpoints.scss';
-.outlineCard {
+.outline-card {
   overflow: auto;
+  & + & {
+    margin-top: 16px;
+  }
 }
 .bonus-block-group {
   & + & {
     margin-top: 32px;
   }
+  text-align: left;
 }
 
 .password-text-hidden-switcher {

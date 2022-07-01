@@ -1,19 +1,9 @@
 <template>
-  <Container class="container">
-    <Heading
-      :title="t('loginhistory.title')"
-      class="Heading-title"
-      :define="t('loginhistory.define')"
-    />
-    <DataTable
-      v-if="isTable"
-      :columns="columns"
-      :data="resolvedData"
-      row-key="id"
-    >
+  <div class="container">
+    <Heading class="Heading-title" :define="t('loginhistory.define')" />
+    <DataTable v-if="isTable" :columns="columns" :data="resolvedData">
       <template #time="{ record }">
-        <Text component="div" size="tiny">{{ record.date }}</Text>
-        <Text component="div" size="tiny">{{ record.time }}</Text>
+        <Text component="div">{{ record.date }}&nbsp;{{ record.time }}</Text>
       </template>
       <template #detailed>
         <Text color="success">
@@ -31,7 +21,7 @@
               :columns="gridExpansionPanelHeaderColumns"
             >
               <template #time>
-                <Text component="div" class="time" device="mobile">
+                <Text component="div" class="time">
                   {{ record.date }}&nbsp;{{ record.time }}
                 </Text>
               </template>
@@ -52,7 +42,7 @@
         </ExpansionPanel>
       </OutlineCard>
     </template>
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -64,7 +54,6 @@ import ExpansionPanel from '@/components/ExpansionPanel.vue';
 import DataTable, { DataTableColumn } from '@/components/DataTable.vue';
 import { LoginHistory } from '@/modules/loginHistory/domain/loginHistory.model';
 import { getLoginHistory } from '@/modules/loginHistory/infrastructure/loginHistory.api';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import Text from '@/components/Typography.vue';
 import OutlineCard from '@/components/OutlineCard.vue';
@@ -163,7 +152,7 @@ const resolvedData = computed(() =>
 // 串接API
 onMounted(() => {
   getLoginHistory({
-    startTime: new Date(0),
+    startTime: moment().subtract(1, 'weeks').toDate(),
     endTime: new Date(),
   }).then((data) => {
     loginData.value = data.slice(0, 10);

@@ -1,27 +1,6 @@
 <template>
-  <div
-    v-show="loginStore.isLoginDialogShown"
-    class="login-dialog-wrapper"
-    @mousedown="closeDialog"
-  >
-    <div class="login-dialog" @mousedown.stop>
-      <Button
-        class="
-          primary-linear-btn
-          p-button-icon-only p-button-rounded
-          login-close-button
-        "
-        @click="closeDialog"
-      >
-        <IconBase
-          :width="12"
-          :height="12"
-          viewBox="9 9 12 12"
-          icon-color="#171927"
-        >
-          <IconClose />
-        </IconBase>
-      </Button>
+  <CommonDialog @close="closeLoginDialog">
+    <div class="container">
       <h2 class="login-dialog-title">{{ 'Welcome back' }}</h2>
       <div class="p-input-filled">
         <span class="p-float-label">
@@ -29,26 +8,11 @@
           <label>{{ 'Email address' }}</label>
         </span>
         <span class="p-float-label">
-          <InputText
+          <PasswordInputBox
             v-model="loginStore.password"
-            :type="isPasswordShown ? 'text' : 'password'"
+            label="Password"
             @keyup.enter="clickLogin"
           />
-          <label>{{ 'Password' }}</label>
-          <div
-            class="password-text-hidden-switcher"
-            @click="togglePasswordShown"
-          >
-            <IconBase
-              :width="24"
-              :height="24"
-              viewBox="0 0 24 24"
-              icon-color="black"
-            >
-              <IconShowInfo v-if="isPasswordShown" />
-              <IconHideInfo v-else />
-            </IconBase>
-          </div>
         </span>
       </div>
       <Button class="primary-linear-btn login-btn" @click="clickLogin">
@@ -64,30 +28,23 @@
         {{ 'Lost your password?' }}
       </span>
     </div>
-  </div>
+  </CommonDialog>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import IconBase from '@/components/icons/IconBase.vue';
-import IconClose from '@/components/icons/IconClose.vue';
-import IconHideInfo from '@/components/icons/IconHideInfo.vue';
-import IconShowInfo from '@/components/icons/IconShowInfo.vue';
 import useLoginStore from '@/modules/user/Infrastructure/store/loginStore';
 import {
-  closeLoginDialog,
   login,
   openSignUpDialog,
   openForgetPasswordDialog,
+  closeLoginDialog,
 } from '@/modules/user/application/login';
+import CommonDialog from '@/layout/CommonDialog.vue';
+import PasswordInputBox from '@/components/PasswordInputBox.vue';
 
 const loginStore = useLoginStore();
-
-function closeDialog() {
-  closeLoginDialog();
-}
 
 function clickLogin() {
   login();
@@ -95,12 +52,6 @@ function clickLogin() {
 
 function openForgetPassword() {
   openForgetPasswordDialog();
-}
-
-const isPasswordShown = ref(false);
-
-function togglePasswordShown() {
-  isPasswordShown.value = !isPasswordShown.value;
 }
 </script>
 
@@ -124,7 +75,6 @@ function togglePasswordShown() {
     flex-direction: row;
     width: 480px;
     height: 421px;
-    margin: 20px;
     padding: 50px;
     border: 1px solid var(--primary-color);
     border-radius: 10px;
@@ -148,60 +98,70 @@ function togglePasswordShown() {
     .login-dialog-content {
       background-color: transparent;
     }
-
-    .login-dialog-title {
-      margin: 0 0 20px;
-      color: var(--primary-color);
-      font-size: 26px;
-      line-height: 24px;
-      text-align: center;
-    }
-
-    .p-float-label {
-      position: relative;
-      margin-top: 12px;
-
-      .password-text-hidden-switcher {
-        position: absolute;
-        top: 20px;
-        right: 14px;
-      }
-    }
-
-    .login-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      margin-top: 24px;
-      font-weight: 500;
-      font-style: normal;
-      font-size: 14px;
-      line-height: 18px;
-    }
-
-    .open-account-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      margin-top: 12px;
-      font-size: 14px;
-      line-height: 18px;
-    }
-
-    .forget-password-link {
-      float: right;
-      margin-top: 20px;
-      color: var(--text-primary);
-      font-size: 12px;
-      line-height: 16px;
-      cursor: pointer;
-    }
-
-    @include mobile {
-      padding: 50px 20px;
-    }
   }
 }
+
+.container {
+  width: 480px;
+  height: 421px;
+  padding: 50px;
+  max-width: 100%;
+  box-sizing: border-box;
+  @include mobile {
+    padding: 50px 20px;
+  }
+}
+.login-dialog-title {
+  margin: 0 0 20px;
+  color: var(--primary-color);
+  font-size: 26px;
+  line-height: 24px;
+  text-align: center;
+}
+
+.p-float-label {
+  position: relative;
+  margin-top: 12px;
+
+  .password-text-hidden-switcher {
+    position: absolute;
+    top: 20px;
+    right: 14px;
+  }
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 24px;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.open-account-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.forget-password-link {
+  float: right;
+  margin-top: 20px;
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+// @include mobile {
+//   padding: 50px 20px;
+// }
 </style>

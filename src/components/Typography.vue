@@ -15,9 +15,10 @@ export type TypographyColor =
   | 'error'
   | 'surface'
   | 'disabled'
-  | 'dark';
+  | 'dark'
+  | 'detail';
 
-export type TypographySize = 'defult' | 'sm' | 'tiny';
+export type TypographySize = 'defult' | 'sm' | 'tiny' | 'detail';
 
 export type TypographyComponent = 'div' | 'span';
 
@@ -46,6 +47,12 @@ withDefaults(defineProps<TypographyProps>(), {
     font-weight: normal;
     font-size: 16px;
     line-height: 20px;
+  }
+  &.detail {
+    font-size: 14px;
+    @include mobile {
+      font-size: 12px;
+    }
   }
 
   &.sm {
@@ -85,6 +92,9 @@ withDefaults(defineProps<TypographyProps>(), {
   }
   &.dark {
     color: var(--secondary-color);
+  }
+  &.detail {
+    color: var(--text-black);
   }
 
   @include mobile {

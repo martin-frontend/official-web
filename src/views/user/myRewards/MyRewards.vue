@@ -1,11 +1,8 @@
 <template>
-  <Container>
-    <div class="bonus-block-group">
-      <Heading
-        :title="t('payment.my_rewards.title')"
-        :define="t('payment.my_rewards.define')"
-      />
-      <OutlineCard>
+  <div>
+    <div class="bonus-block-group header">
+      <Heading :title="t('payment.my_rewards.title')" />
+      <!-- <OutlineCard>
         <div class="bulletin">
           <div class="bulletin-item">
             {{
@@ -34,8 +31,9 @@
             </Button>
           </div>
         </div>
-      </OutlineCard>
+      </OutlineCard> -->
     </div>
+
     <RewardTransferModal
       v-model:visible="openTransfer"
       :transfer-title="transferTitle"
@@ -88,12 +86,17 @@
                 <div class="tabulation__progressbar">
                   <div class="progressbar">
                     <div
+                      v-if="achievemet.completed"
                       class="progressbar__success basic"
                       :style="{
-                        width: percentage(
-                          achievemet.currentAmount,
-                          achievemet.targetAmount
-                        ),
+                        width: 100,
+                      }"
+                    />
+                    <div
+                      v-else
+                      class="progressbar__success basic"
+                      :style="{
+                        width: 0,
                       }"
                     />
                   </div>
@@ -105,10 +108,10 @@
                     component="button"
                     :color="
                       !achievemet.completed
-                        ? 'success'
+                        ? 'primary'
                         : achievemet.rewardReceived
                         ? 'disabled'
-                        : 'primary'
+                        : 'success'
                     "
                     size="my-rewards"
                     @click="
@@ -153,7 +156,7 @@
               size="small"
               variant="darken-rounded"
               :actived="type === curAchievementType"
-              @click="chaneAchievementType(type)"
+              @click="changeAchievementType(type)"
             >
               {{ name }}
             </Button>
@@ -203,10 +206,10 @@
                 <div class="progressbar">
                   <div
                     :style="{
-                      width: percentage(
+                      width: `${percentage(
                         achievemet.currentAmount,
                         achievemet.targetAmount
-                      ),
+                      )}%`,
                     }"
                     class="progressbar__success grand"
                   />
@@ -219,10 +222,10 @@
                   component="button"
                   :color="
                     !achievemet.completed
-                      ? 'success'
+                      ? 'primary'
                       : achievemet.rewardReceived
                       ? 'disabled'
-                      : 'primary'
+                      : 'success'
                   "
                   size="my-rewards"
                   @click="
@@ -256,7 +259,7 @@
       color="success"
       @closeToast="closeToast"
     /> -->
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -265,12 +268,11 @@ import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 // import { useToast } from 'primevue/usetoast';
 import Button from '@/components/Button.vue';
-import IconBase from '@/components/icons/IconBase.vue';
-import IconTransfer from '@/components/icons/IconTransfer.vue';
-import useBalanceStore from '@/modules/userBalance/infrastructure/store/balanceStore';
+// import IconBase from '@/components/icons/IconBase.vue';
+// import IconTransfer from '@/components/icons/IconTransfer.vue';
+// import useBalanceStore from '@/modules/userBalance/infrastructure/store/balanceStore';
 import getAchievement from '@/modules/rewards/application/achievement';
 // import { RewardAchievement } from '@/modules/rewards/domain/rewardAchievement';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import OutlineCard from '@/components/OutlineCard.vue';
 import {
@@ -318,7 +320,7 @@ const isMobile = computed(() => device.value === Device.MOBILE);
 const isDesktop = computed(() => device.value === Device.DESKTOP);
 
 const router = useRouter();
-const balanceStore = useBalanceStore();
+// const balanceStore = useBalanceStore();
 
 const imagePath = `${process.env.VUE_APP_IMAGE_DOMAIN}/file?path=`;
 const setImagePath = (achievemet: RewardAchievement): string => {
@@ -364,7 +366,7 @@ const achievementBasicTypeArr = Object.values(AchievementBasicType).filter(
   (item) => typeof item === 'number'
 );
 
-const chaneAchievementType = (type: AchievementType) => {
+const changeAchievementType = (type: AchievementType) => {
   curAchievementType.value = type;
 };
 
@@ -390,6 +392,7 @@ const showDialog = (rewardAmount: number) => {
     isCoinShown: true,
     onCancel() {
       dialogStore.close();
+      router.push('/user/history/balance-rewards');
     },
   });
 };
@@ -399,9 +402,9 @@ const transferTitle = t('payment.my_rewards.transfer_modal.title');
 const openTransfer = ref(false);
 // const toastTitle = t('payment.my_rewards.toast.title');
 // const toastDescription = t('payment.my_rewards.toast.description');
-function openDialog() {
-  openTransfer.value = true;
-}
+// function openDialog() {
+//   openTransfer.value = true;
+// }
 
 const openConfirm = ref(false);
 
@@ -442,7 +445,7 @@ const handleReceiveRewardsOrToDo = async (
           // router.push('/user/withdrawal');
           return;
         }
-        router.push('/user/personal-settings');
+        router.push('/user/my-account/personal-settings');
         break;
       case AchievementType.Game:
         router.push('home');
@@ -506,6 +509,9 @@ onMounted(async () => {
 .bonus-block-group {
   & + & {
     margin-top: 32px;
+  }
+  &.header {
+    border-bottom: 1px solid var(--primary-color);
   }
 }
 .transfer-button {
@@ -724,6 +730,12 @@ onMounted(async () => {
   &-disabled {
     background: #9e9e9e;
     color: #e0e0e0;
+  }
+}
+
+.outline-card {
+  & + & {
+    margin-top: 16px;
   }
 }
 </style>

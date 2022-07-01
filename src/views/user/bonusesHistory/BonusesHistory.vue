@@ -1,24 +1,16 @@
 <template>
-  <Container class="container">
-    <Heading
-      :title="t('bonusesHistory.title')"
-      :define="t('bonusesHistory.define')"
-      class="Heading-title"
-    />
+  <div class="container">
+    <Heading :define="t('bonusesHistory.define')" class="Heading-title" />
     <FiltersWrap
       v-model:start-time="startDate"
       v-model:end-time="endDate"
       :date-limits="dateLimits"
-      @handleSearch="updateCompletionEvent"
+      @handleSearch="onSearchWalletEvents"
     />
-    <DataTable
-      v-if="isTable"
-      :columns="columns"
-      :data="resolvedData"
-      row-key="id"
-    >
+    <DataTable v-if="isTable" :columns="bonusColumns" :data="resolvedData">
       <template #order="{ rowIndex }">
-        {{ rowIndex + 1 + 20 * (page - 1) }}
+        {{ rowIndex + 1 }}
+        <!-- {{ rowIndex + 1 + 20 * (page - 1) }} -->
       </template>
       <template #time="{ record }">
         <Text component="div" size="tiny">{{ record.date }}</Text>
@@ -28,11 +20,14 @@
         <Text component="div" size="tiny">{{ record.item }}</Text>
         <Text component="div" size="tiny">{{ record.remark }}</Text>
       </template>
-      <!-- <template #amount="{ record }">
-        <Text :color="record.amount < 0 ? 'error' : 'primary'">
+      <template #amount="{ record }">
+        <Text v-if="record.amount.toString().includes('-')">
           {{ record.amount }}
         </Text>
-      </template> -->
+        <Text v-else>
+          {{ `+${record.amount}` }}
+        </Text>
+      </template>
       <template #orderId="{ record, text }">
         <Text
           color="success"
@@ -43,7 +38,6 @@
           {{ text }}
         </Text>
       </template>
-      -->
     </DataTable>
 
     <template v-else>
@@ -59,6 +53,14 @@
             >
               <template #order>
                 {{ index + 1 }}
+              </template>
+              <template #amount>
+                <Text v-if="record.amount.toString().includes('-')">
+                  {{ record.amount }}
+                </Text>
+                <Text v-else>
+                  {{ `+${record.amount}` }}
+                </Text>
               </template>
               <!-- <template #amount>
                 <Text
@@ -78,6 +80,17 @@
               <template #item>
                 <Text component="div" device="mobile">
                   {{ record.item }} {{ record.remark }}
+                </Text>
+              </template>
+              <template #amount>
+                <Text
+                  v-if="record.amount.toString().includes('-')"
+                  device="mobile"
+                >
+                  {{ record.amount }}
+                </Text>
+                <Text v-else device="mobile">
+                  {{ `+${record.amount}` }}
                 </Text>
               </template>
               <!-- <template #amount>
@@ -111,11 +124,16 @@
     <Pagination
       v-model:page="page"
       :total-rows="totalrows"
-      @click="updateCompletionEvent"
+      @update:page="updateCompletionEvent"
     />
-  </Container>
+  </div>
   <BonusesHistoryDetail
-    v-model:visible="detail"
+    v-model:visible="openBonusesHistoryDetail"
+    :data="{ ...detail, ...userData }"
+    @close="close"
+  />
+  <BonusTransferDetail
+    v-model:visible="openBonusTransferDetail"
     :data="{ ...detail, ...userData }"
     @close="close"
   />
@@ -127,9 +145,10 @@ import { useI18n } from 'vue-i18n';
 import FormGroup from 'vue-reactive-form';
 import moment from 'moment';
 import ExpansionPanel from '@/components/ExpansionPanel.vue';
-import DataTable, { DataTableColumn } from '@/components/DataTable.vue';
+import DataTable from '@/components/DataTable.vue';
 import {
   BonusesHistory,
+  BonusesHistoryDetails,
   SearchCompletedUserEventForm,
 } from '@/modules/bonusesHistory/domain/bounusesHistory.model';
 import {
@@ -138,7 +157,6 @@ import {
   getbonusActivity,
   getbonusLevel,
 } from '@/modules/bonusesHistory/infrastructure/bonusesHistory.api';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import Text from '@/components/Typography.vue';
 import { toDollarsAmount } from '@/libs/dollars';
@@ -157,14 +175,15 @@ import useUserStore from '@/modules/user/Infrastructure/store/userStore';
 import { UserInfo } from '@/modules/paymentsHistory/domain/paymentsHistory.model';
 import BonusesHistoryDetail from '@/modules/bonusesHistory/ui/BonusesHistoryDetail.vue';
 import FiltersWrap from '@/components/FiltersWrap.vue';
+import BonusTransferDetail from '@/modules/bonusesHistory/ui/BonusTransferDetail.vue';
 
 const { t } = useI18n();
 
 // 表單資料
-const columns: DataTableColumn<typeof resolvedData.value[number]>[] = [
+const bonusColumns = [
   {
     key: 'order',
-    header: 'No',
+    header: 'No.',
   },
   {
     key: 'kind',
@@ -260,8 +279,11 @@ const searchCompletedForm = new FormGroup<SearchCompletedUserEventForm>({
 const { startDate, endDate, page } = searchCompletedForm.refs;
 const content = ref<BonusesHistory[]>([]);
 const totalrows = ref<number>(0);
+const openBonusTransferDetail = ref(false);
+const openBonusesHistoryDetail = ref(false);
+const bonusTransferDetailData = ref<BonusesHistoryDetails[]>([]);
 
-// ------------------------------------點擊search觸發的函式----------------------------------
+// -------------------------------切換頁面--updateCompletionEvent----------------------------------
 function updateCompletionEvent() {
   const update = {
     startTime: searchCompletedForm.refs.startDate.value,
@@ -271,12 +293,15 @@ function updateCompletionEvent() {
     type: 1,
   };
   getBonusesHistory(update).then((bonusesHistories) => {
-    totalrows.value = bonusesHistories.totalElements;
-    const serialNumbers = bonusesHistories.content.map((item) => item.orderId);
+    totalrows.value = bonusesHistories.page.totalElements;
+    const serialNumbers = bonusesHistories.page.content.map(
+      (item) => item.orderId
+    );
+    bonusTransferDetailData.value = bonusesHistories.details;
     // console.log('serialNumbers', serialNumbers);
     if (serialNumbers.length !== 0) {
       getbonusIds({ ids: serialNumbers }).then((bonusIds) => {
-        content.value = bonusesHistories.content.map((item) => {
+        content.value = bonusesHistories.page.content.map((item) => {
           const bonusId = bonusIds.find(
             (element: { id: string }) => element.id === item.orderId
           );
@@ -301,6 +326,12 @@ function updateCompletionEvent() {
     }
   });
 }
+// ----------------------------------綁在搜尋---onSearchWalletEvents---------------------------------------------------
+const onSearchWalletEvents = () => {
+  page.value = 1;
+  updateCompletionEvent();
+};
+
 // 限制可搜尋之日期區間
 const dateLimits = {
   minDate: moment().subtract(3, 'months').toDate(),
@@ -337,11 +368,9 @@ const resolvedData = computed(() =>
 );
 // -----------------------------------------點擊view打開詳細清單-----------------------------
 const detail = ref<BonusesHistory | null>(null);
-
-// const bonusActivityData = ref([]);
 function openDialog(record: BonusesHistory) {
   const recordOrderId = record.bonusIdsOrderId;
-  if (record?.bonusIdsKind === 1) {
+  if (record?.kind === 'Activity' || record?.kind === 'System') {
     getbonusActivity({ id: recordOrderId }).then((bonusActivityData) => {
       const acceptedTime = moment(
         bonusActivityData.playerActivityDto.acceptedAt
@@ -385,19 +414,26 @@ function openDialog(record: BonusesHistory) {
         activityType,
         activityTarget,
       };
+      openBonusesHistoryDetail.value = true;
     });
-  }
-
-  if (record?.bonusIdsKind === 2) {
+  } else if (record?.bonusIdsKind === 2) {
     getbonusLevel({ level: recordOrderId });
     // const activityName = '遊戲升級';
     // detail.value = { ...record, activityName };
+  } else if (record?.kind === 'Wallet Transfer') {
+    const found = bonusTransferDetailData.value.filter(
+      (element) => element.logId === record.id
+    );
+    const transferedBonusId = found.map((element) => element.orderId);
+    detail.value = { ...record, transferedBonusId };
+    openBonusTransferDetail.value = true;
   }
-
-  // console.log('detail.value-----------------', detail.value);
 }
+
 function close() {
   detail.value = null;
+  openBonusTransferDetail.value = false;
+  openBonusesHistoryDetail.value = false;
 }
 
 // 感應裝置大小

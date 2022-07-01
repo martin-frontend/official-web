@@ -15,11 +15,12 @@ export interface RegisterInfo {
   phoneNumber: string;
   visitorId: string;
   zipCode: string;
+  emailLinkUrlPath?: string;
 }
 
 export type RegisterForm = Omit<
   RegisterInfo,
-  'visitorId' | 'birthday' | 'phoneNumber' | 'visitorId'
+  'visitorId' | 'birthday' | 'phoneNumber' | 'visitorId' | 'emailLinkUrlPath'
 > & {
   dayOfBirth: number;
   monthOfBirth: number;

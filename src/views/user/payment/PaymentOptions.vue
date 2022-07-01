@@ -89,6 +89,13 @@ const { paymentOptions, withdrawOptions } = usePaymentOptions();
 <style lang="scss" scoped>
 @import '@/styles/breakpoints';
 
+.outline-card {
+  overflow: auto;
+  & + & {
+    margin-top: 16px;
+  }
+}
+
 .payments-wrap {
   & + & {
     margin-top: 32px;

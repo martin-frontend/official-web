@@ -2,7 +2,7 @@
   <div class="notice-group">
     <Button
       class="p-button-rounded p-button-icon-only p-button-outlined alert-btn"
-      @click="openUserMenu"
+      @click="openAnnouncement"
     >
       <IconBase :width="24" :height="24" viewBox="0 0 24 24">
         <IconMessage />
@@ -10,101 +10,151 @@
 
       <Badge v-if="badge" :value="badge" severity="danger" />
     </Button>
-    <div v-show="noticeNum" class="notice-number">{{ noticeNum }}</div>
+    <div v-if="noticeNum > 99" class="notice-number">{{ '99+' }}</div>
+    <div v-else-if="noticeNum" class="notice-number">{{ noticeNum }}</div>
+    <div v-else>{{}}</div>
   </div>
-  <div v-show="noticePopStore.isNoticePopShown" class="user-dropdown-menu">
-    <div class="backAndTitle">
-      <div class="back" @click="closeUserMenu">
-        <i class="pi pi-angle-left" />
+
+  <teleport to="#app">
+    <Mask
+      v-if="noticePopStore.isNoticePopShown"
+      background="unset"
+      @click.stop="closeAnnouncement"
+    />
+
+    <Transition name="fade">
+      <div v-if="noticePopStore.isNoticePopShown" class="user-dropdown-menu">
+        <div class="backAndTitle">
+          <div class="back" @click="closeAnnouncement">
+            <i class="pi pi-angle-left" />
+          </div>
+          <div class="notification">
+            {{ 'Notifications' }}
+          </div>
+        </div>
+        <div class="all-notifications">
+          <template
+            v-for="notification of notifications"
+            :key="`${notification.type}${notification.id}`"
+            class="menu-link"
+          >
+            <SingleNotice v-bind="notification" @isRead="isRead" />
+          </template>
+        </div>
+        <div class="space" />
       </div>
-      <div class="notification">
-        {{ 'Notifications' }}
-      </div>
-    </div>
-    <div class="all-notifications">
-      <template
-        v-for="notification of resolvedData"
-        :key="notification.id"
-        class="menu-link"
-      >
-        <SingleNotice
-          :content="notification.content"
-          :date-and-time="notification.dateAndTime"
-          :title="notification.title"
-          @isRead="isRead(notification.id)"
-        >
-          {{ notification }}
-        </SingleNotice>
-      </template>
-    </div>
-    <div class="space">{{}}</div>
-  </div>
+    </Transition>
+  </teleport>
 </template>
 
 <script setup lang="ts">
 import Button from 'primevue/button';
 import { ref, computed, onMounted } from 'vue';
 import Badge from 'primevue/badge';
-import moment from 'moment';
 import IconBase from '@/components/icons/IconBase.vue';
 import IconMessage from '@/components/icons/IconMessage.vue';
-import { fetchGet } from '@/core/services/api/apiBase';
 import useNoticePopStore from '@/modules/theHeader/infrastructure/store/noticePop';
 import useUserPopStore from '@/modules/theHeader/infrastructure/store/userPop';
+import usePlayerMessageStore from '@/modules/theHeader/infrastructure/store/playerMessage';
 import SingleNotice from '@/components/singleNotice.vue';
+import {
+  playerMessageExcludeFromCount,
+  announcementExcludeFromCount,
+  getAnnouncement,
+  markAnnouncementAsRead,
+  markPlayerMessageAsRead,
+} from '@/modules/theHeader/infrastructure/api/noticePopApi';
+import { Announcement } from '@/modules/theHeader/domain/noticePop';
+import { AnnouncementType } from '@/modules/theHeader/domain/announcementType';
+import Mask from '@/components/Mask.vue';
 
 const badge = ref(0);
-const noticeNum = ref(0);
 
 const noticePopStore = useNoticePopStore();
 const userPopStore = useUserPopStore();
+const playerMessageStore = usePlayerMessageStore();
 
-const notifications = ref<Announcement[]>([]);
+const announcements = ref<Announcement[]>([]);
 
-function getAnnouncement(): Promise<Announcement[]> {
-  return fetchGet('/official/v1/announcement');
-}
+const playerMessages = computed(() => playerMessageStore.data);
 
-function closeUserMenu() {
-  noticePopStore.setIsNoticePopShown(false);
-}
+const updatePlayerMessages = async () => {
+  playerMessageStore.updatePlayerMessage();
+};
 
-function openUserMenu() {
-  userPopStore.setIsUserPopShown(false);
-  noticePopStore.setIsNoticePopShown(!noticePopStore.isNoticePopShown);
-  noticeNum.value = 0;
-}
-const resolvedData = computed(() =>
-  notifications.value.map((record) => {
-    const time = moment(record.startTime);
+const updateAnnouncements = async () => {
+  announcements.value = await getAnnouncement();
+};
 
-    return {
-      ...record,
-      dateAndTime: time.format('YYYY-MM-DD HH:mm'),
-    };
+const unviewedPlayerMessages = computed(() =>
+  playerMessages.value.filter(({ excludeFromCount }) => !excludeFromCount)
+);
+
+const unviewedAnnouncements = computed(() =>
+  announcements.value.filter(({ excludeFromCount }) => !excludeFromCount)
+);
+
+const notifications = computed(() =>
+  playerMessages.value.concat(announcements.value).sort((a, b) => {
+    return b.startTime - a.startTime;
   })
 );
 
-function isRead(id: number) {
-  console.log(`收到來自singleNotice的已讀動作${id}`);
+const noticeNum = computed(
+  () => unviewedPlayerMessages.value.length + unviewedAnnouncements.value.length
+);
+
+const checkUnviewedMessages = async () => {
+  if (noticeNum.value > 0) {
+    if (unviewedPlayerMessages.value.length > 0) {
+      const unviewedIds = unviewedPlayerMessages.value.map(
+        (record) => record.id
+      );
+      await playerMessageExcludeFromCount(unviewedIds);
+      updatePlayerMessages();
+    }
+    if (unviewedAnnouncements.value.length > 0) {
+      const unviewedIds = unviewedAnnouncements.value.map(
+        (record) => record.id
+      );
+      await announcementExcludeFromCount(unviewedIds);
+      updateAnnouncements();
+    }
+  }
+};
+
+function openAnnouncement() {
+  userPopStore.setIsUserPopShown(false);
+  noticePopStore.setIsNoticePopShown(!noticePopStore.isNoticePopShown);
+
+  checkUnviewedMessages();
 }
-interface Announcement {
-  content: string;
-  id: number;
-  startTime: number;
-  title: string;
-  type: string;
+
+function closeAnnouncement() {
+  noticePopStore.setIsNoticePopShown(false);
+  checkUnviewedMessages();
 }
+
+async function isRead(notice: Announcement) {
+  const { id, type } = notice;
+  if (type === AnnouncementType.PLAYER_MESSAGE) {
+    await markPlayerMessageAsRead(id);
+    updatePlayerMessages();
+  } else {
+    await markAnnouncementAsRead(id);
+    updateAnnouncements();
+  }
+}
+
 onMounted(() => {
-  getAnnouncement().then((data) => {
-    notifications.value = data;
-    noticeNum.value = data.length;
-  });
+  updatePlayerMessages();
+  updateAnnouncements();
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mediaQuery.scss';
+@import '@/styles/mediaQuery.scss';
+@import '@/styles/transition.scss';
 
 .backAndTitle {
   display: flex;
@@ -120,7 +170,17 @@ onMounted(() => {
   border-radius: 5px;
   background: #f5f5f5;
   box-shadow: 0 9px 18px rgba(0, 0, 0, 0.45);
+  z-index: 11;
 
+  @include pad {
+    top: 0;
+    right: 0;
+    overflow: auto;
+    width: 100%;
+    height: 100vh;
+    border: 0;
+    border-radius: 0;
+  }
   .back {
     display: none;
     align-items: center;
@@ -135,7 +195,7 @@ onMounted(() => {
       margin-right: 5px;
     }
 
-    @include laptop {
+    @include pad {
       display: flex;
     }
   }
@@ -157,20 +217,22 @@ onMounted(() => {
   .space {
     height: 16px;
   }
-  @include laptop {
-    top: 0;
-    right: 0;
-    overflow: auto;
-    width: 100vw;
-    height: 100vh;
-    border: 0;
-    border-radius: 0;
-  }
 }
 .all-notifications {
   max-height: 500px;
   overflow-x: auto;
 }
+.all-notifications::-webkit-scrollbar {
+  width: 6px;
+}
+.all-notifications::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.all-notifications::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  background: #9e9e9e;
+}
+
 .user-dropdown-menu::before {
   content: '';
   width: 0;

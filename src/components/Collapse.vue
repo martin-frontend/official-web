@@ -44,6 +44,7 @@ function toggle() {
     justify-content: flex-start;
     height: 100px;
     padding: 0 24px;
+    cursor: pointer;
 
     svg {
       margin-left: auto;

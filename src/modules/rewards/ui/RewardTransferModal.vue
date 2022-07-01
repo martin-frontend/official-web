@@ -27,7 +27,6 @@
               placeholder=""
               :class="{ errorClass: showAmountError }"
               class="form-control"
-              :max="balanceStore.reward"
             />
             <!-- <InputBox
               id="points"
@@ -75,31 +74,12 @@
           <div class="exchange-amount">{{ exchangeAmount }}</div>
         </div>
         <Button
-          v-if="disableButton"
           class="transfer-button"
           component="button"
           size="transfer"
           variant="rounded"
-          disabled
-          @click="openConfirmDialog"
-        >
-          <IconBase
-            :width="20"
-            :height="20"
-            viewBox="0 0 24 24"
-            icon-color="var(--primary-color)"
-          >
-            <IconTransfer />
-          </IconBase>
-          {{ t('payment.my_rewards.transferButton') }}
-        </Button>
-        <Button
-          v-else
-          class="transfer-button"
-          component="button"
-          size="transfer"
-          variant="rounded"
-          color="success"
+          :disabled="disableButton"
+          :color="disableButton ? undefined : 'success'"
           @click="openConfirmDialog"
         >
           <IconBase
@@ -131,7 +111,7 @@ import {
   getTransferRule,
   transferRewards,
 } from '../infrastructure/api/achievementApi';
-import useToastStore, { defaultToast } from '@/core/shared/toastStore';
+import useToastStore from '@/core/shared/toastStore';
 // import InputBox from '@/components/InputBox.vue';
 // import { transferRewards } from '../infrastructure/api/achievementApi';
 // import RewardTransferConfirmModal from './RewardTransferConfirmModal.vue';
@@ -147,16 +127,19 @@ const rewardTransferAmountDivisionRate = ref(0);
 const rewardTransferRuleWithdrawalLimitRate = ref(0);
 
 function applyTransfer() {
-  applyTransferPoint.value = transferPoint.value;
-
-  if (transferPoint.value >= balanceStore.reward) {
-    transferPoint.value = balanceStore.reward;
+  if (transferPoint.value > balanceStore.reward) {
     showAmountError.value = true;
+    applyTransferPoint.value = 0;
+    disableButton.value = true;
+    // transferPoint.value = balanceStore.reward;
   } else {
     showAmountError.value = false;
+    applyTransferPoint.value = transferPoint.value;
   }
 
   if (transferPoint.value === 0 || transferPoint.value < 0) {
+    disableButton.value = true;
+  } else if (transferPoint.value > balanceStore.reward) {
     disableButton.value = true;
   } else {
     disableButton.value = false;
@@ -186,12 +169,11 @@ const dialogStore = useDialogStore();
 const toastStore = useToastStore();
 
 function openToast() {
-  const toast = { ...defaultToast };
-  toast.toastTitle = t('payment.my_rewards.toast.title');
-  toast.toastDescription = t('payment.my_rewards.toast.description');
-  toast.isIconCheckCircle = true;
-  toast.color = 'success';
-  toastStore.addToastMessage(toast);
+  toastStore.addToastMessage({
+    toastTitle: t('payment.my_rewards.toast.title'),
+    toastDescription: t('payment.my_rewards.toast.description'),
+    isIconCheckCircle: true,
+  });
 }
 
 function openConfirmDialog() {

@@ -4,15 +4,14 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { checkUserStatus } from './modules/user/application/user';
+import updateAuthToken from './core/auth/updateAuthToken';
 import useLanguageStore from './modules/user/Infrastructure/store/languageStore';
 
 const langStore = useLanguageStore();
 
 onMounted(async () => {
   langStore.initLanguage();
-
-  checkUserStatus();
+  updateAuthToken();
 });
 </script>
 

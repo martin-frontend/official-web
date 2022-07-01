@@ -32,7 +32,7 @@
           </p>
         </div>
       </div>
-      <div class="dialog-bottom">
+      <div v-show="isPromotionPage" class="dialog-bottom">
         <Button variant="rounded" size="small" @click="acceptEvent">
           {{ t('common.get_started') }}
         </Button>
@@ -44,7 +44,13 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, toRefs, onUnmounted, defineEmits } from 'vue';
+import {
+  defineProps,
+  toRefs,
+  onUnmounted,
+  defineEmits,
+  withDefaults,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DialogPrimevue from 'primevue/dialog';
@@ -58,9 +64,14 @@ const { t } = useI18n();
 
 const imagePath = `${process.env.VUE_APP_IMAGE_DOMAIN}/file?path=`;
 
-const props = defineProps<{ promotionEvent: null | PromotionEvent }>();
-
-const { promotionEvent } = toRefs(props);
+const props = withDefaults(
+  defineProps<{
+    promotionEvent: null | PromotionEvent;
+    isPromotionPage: boolean;
+  }>(),
+  { isPromotionPage: false }
+);
+const { promotionEvent, isPromotionPage } = toRefs(props);
 
 const emit = defineEmits<{
   (e: 'close'): void;

@@ -4,7 +4,7 @@ export interface BonusesHistory {
   beforeAmount: number;
   id: number;
   item: string;
-  kind: number;
+  kind: string;
   orderId: string;
   playerId: number;
   remark: string;
@@ -20,9 +20,31 @@ export interface BonusesHistory {
   activityType: string;
   activityTarget: string;
   dateAndTime: string;
+  transferedBonusId: string[];
 }
 
-export interface BonusesHistoryObject {
+// export interface BonusesHistoryObject {
+//   content: BonusesHistory[];
+//   first: boolean;
+//   last: boolean;
+//   number: number;
+//   numberOfElements: number;
+//   size: number;
+//   totalElements: number;
+//   totalPages: number;
+//   page: number;
+// }
+export interface BonusesHistoryDetails {
+  afterAmount: number;
+  amount: number;
+  beforeAmount: number;
+  id: number;
+  logId: number;
+  logTime: number;
+  orderId: string;
+  remark: string;
+}
+export interface BonusesHistoryPage {
   content: BonusesHistory[];
   first: boolean;
   last: boolean;

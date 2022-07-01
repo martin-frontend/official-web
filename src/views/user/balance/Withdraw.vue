@@ -1,10 +1,7 @@
 <template>
-  <Container>
+  <div>
     <div class="bonus-block-group">
-      <Heading
-        :title="t('payment.balance_withdraw.title')"
-        :define="t('payment.balance_withdraw.define')"
-      />
+      <Heading :define="t('payment.balance_withdraw.define')" />
 
       <FiltersWrap
         v-model:start-time="startTime"
@@ -21,21 +18,6 @@
               <option :value="PaymentTransactionKindOther.SEE_ALL">
                 {{ t('payment.transaction.kind.SEE_ALL') }}
               </option>
-              <option
-                v-for="(type, index) of paymentTransactionKindTypes"
-                v-show="
-                  type !==
-                  PaymentTransactionKindOther[
-                    PaymentTransactionKindOther.SEE_ALL
-                  ]
-                "
-                :key="type"
-                :value="index"
-              >
-                {{ t(`payment.transaction.kind.${type}`) }}
-                =======
-              </option>
-
               <option :value="PaymentTransactionKindOther.DEPOSIT">
                 {{ t('payment.transaction.kind.DEPOSIT') }}
               </option>
@@ -78,6 +60,14 @@
           {{ text }}
         </Text>
       </template>
+      <template #amount="{ record }">
+        <Text v-if="record.amount < 0">
+          {{ record.amount }}
+        </Text>
+        <Text v-else>
+          {{ `+${record.amount}` }}
+        </Text>
+      </template>
       <!-- <template #amount="{ text }">
         <a href="#">
           <Text :color="text >= 0 ? 'primary' : 'error'">{{ text }}</Text>
@@ -107,6 +97,14 @@
               <template #kind>
                 {{ PaymentTransactionKind[record.kind] }}
               </template>
+              <template #amount>
+                <Text v-if="record.amount < 0">
+                  {{ record.amount }}
+                </Text>
+                <Text v-else>
+                  {{ `+${record.amount}` }}
+                </Text>
+              </template>
               <!-- <template #amount="{ text }">
                 <a href="#">
                   <Text
@@ -132,6 +130,14 @@
               </template>
               <template #kind>
                 {{ PaymentTransactionKind[record.kind] }}
+              </template>
+              <template #amount>
+                <Text v-if="record.amount < 0">
+                  {{ record.amount }}
+                </Text>
+                <Text v-else>
+                  {{ `+${record.amount}` }}
+                </Text>
               </template>
               <!-- <template #amount="{ text }">
                 <a href="#">
@@ -174,7 +180,7 @@
     />
 
     <GameHistoryDetail
-      v-model:visible="openBonusesHistoryDetail"
+      v-model:visible="openGameHistoryDetail"
       :data="{ ...detail, ...userData }"
       @close="close"
     />
@@ -184,14 +190,18 @@
       :data="{ ...detail, ...userData }"
       @close="close"
     />
-  </Container>
+    <BonusTransferDetail
+      v-model:visible="openBonusTransferDetail"
+      :data="{ ...detail, ...userData }"
+      @close="close"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import moment from 'moment';
 import { onMounted, ref, computed } from 'vue';
-
 import FormGroup from 'vue-reactive-form';
 import {
   getAccountingAdjustmentDetail,
@@ -199,7 +209,6 @@ import {
   getPaymentTransactionsOther,
 } from '@/modules/payment/infrastructure/payment.api';
 import { SearchPlayerWalletLogFormOther } from '@/modules/userBalance/infrastructure/api/balanceApi';
-import Container from '@/layout/Container.vue';
 import IconBase from '@/components/icons/IconBase.vue';
 import Heading from '@/components/Heading.vue';
 import IconFilledArrow from '@/components/icons/IconFilledArrow.vue';
@@ -236,17 +245,24 @@ import {
   UserInfo,
 } from '@/modules/paymentsHistory/domain/paymentsHistory.model';
 import { ACCOUNT_ADJUSTIMENT_STATUS_I18N_KEYS } from '@/modules/payment/domain/payment.i18n';
+import BonusTransferDetail from '@/modules/bonusesHistory/ui/BonusTransferDetail.vue';
+import { BonusesHistoryDetails } from '@/modules/bonusesHistory/domain/bounusesHistory.model';
 
 const withdrawColumns = [
   {
     key: 'order',
-    header: 'Order',
+    header: 'No.',
     data: 'order',
   },
   {
     key: 'kind',
     header: 'Type',
     data: 'kind',
+  },
+  {
+    key: 'orderId',
+    header: 'Serial Number',
+    data: 'orderId',
   },
   {
     key: 'beforeAmount',
@@ -267,11 +283,6 @@ const withdrawColumns = [
     key: 'time',
     header: 'Completed',
     data: 'time',
-  },
-  {
-    key: 'orderId',
-    header: 'Serial Number',
-    data: 'orderId',
   },
   {
     key: 'remark',
@@ -304,6 +315,11 @@ const gridExpansionPanelHeaderColumns = [
     data: 'kind',
   },
   {
+    key: 'orderId',
+    header: 'Serial Number',
+    data: 'orderId',
+  },
+  {
     key: 'beforeAmount',
     header: 'Before',
     data: 'beforeAmount',
@@ -322,11 +338,6 @@ const gridExpansionPanelHeaderColumns = [
     key: 'time',
     header: 'Completed',
     data: 'time',
-  },
-  {
-    key: 'orderId',
-    header: 'Serial Number',
-    data: 'orderId',
   },
   {
     key: 'remark',
@@ -377,6 +388,7 @@ let queryObject: GetPaymentTransactionsDtoOther = {
 };
 
 const content = ref<PaymentTransaction[]>([]);
+const bonusTransferDetailData = ref<BonusesHistoryDetails[]>([]);
 const totalRows = ref<number>(0);
 
 async function updatePlayerWallet({ page }: GetPaymentTransactionsDtoOther) {
@@ -385,15 +397,16 @@ async function updatePlayerWallet({ page }: GetPaymentTransactionsDtoOther) {
   }
 
   queryObject.page = page;
-  const { content: resContent, totalElements } =
-    await getPaymentTransactionsOther(queryObject);
+  const res = await getPaymentTransactionsOther(queryObject);
+  const { content: resContent, totalElements } = res.page;
+  bonusTransferDetailData.value = res.details;
   resContent.forEach((data, index) => {
     resContent[index].amount = toDollarsAmount(Number(data.amount));
     resContent[index].beforeAmount = toDollarsAmount(Number(data.beforeAmount));
     resContent[index].afterAmount = toDollarsAmount(Number(data.afterAmount));
-    if (data.amount > 0) {
-      resContent[index].amount = `+${data.amount}`;
-    }
+    // if (data.amount > 0) {
+    //   resContent[index].amount = `+${toDollarsAmount(Number(data.amount))}`;
+    // }
   });
 
   totalRows.value = totalElements;
@@ -409,8 +422,9 @@ const onSearchWalletEvents = ({ ...rest }: GetPaymentTransactionsDtoOther) => {
 
 const detail = ref<WithdrawDetail | null>(null);
 const openPaymentsHistoryDetail = ref(false);
-const openBonusesHistoryDetail = ref(false);
+const openGameHistoryDetail = ref(false);
 const openAccountingAdjustmentDetail = ref(false);
+const openBonusTransferDetail = ref(false);
 
 function openDialog(record: WithdrawDetail | null) {
   if (record?.kind === 1) {
@@ -439,11 +453,10 @@ function openDialog(record: WithdrawDetail | null) {
       };
       openPaymentsHistoryDetail.value = true;
     });
-  }
-  if (record?.kind === 4) {
-    openBonusesHistoryDetail.value = true;
-  }
-  if (record?.kind === 3) {
+  } else if (record?.kind === 4) {
+    openGameHistoryDetail.value = true;
+    detail.value = record;
+  } else if (record?.kind === 3) {
     getAccountingAdjustmentDetail({ orderNo: record.orderId }).then((data) => {
       const adjustmentReason = data.accountingAdjustment.applyReason;
       const { amount, beforeAmount, afterAmount, orderId } = record;
@@ -467,15 +480,22 @@ function openDialog(record: WithdrawDetail | null) {
       };
       openAccountingAdjustmentDetail.value = true;
     });
-  }
+  } else if (record?.kind === 7) {
+    const dateAndTime = moment(record.time).format('YYYY-MM-DD HH:mm:ss');
+    const found = bonusTransferDetailData.value.filter(
+      (element) => element.logId === record.id
+    );
+    const transferedBonusId = found.map((element) => element.orderId);
 
-  detail.value = record;
-  // console.log(record?.kind);
+    detail.value = { ...record, transferedBonusId, dateAndTime };
+    openBonusTransferDetail.value = true;
+  }
 }
 function close() {
   openPaymentsHistoryDetail.value = false;
-  openBonusesHistoryDetail.value = false;
+  openGameHistoryDetail.value = false;
   openAccountingAdjustmentDetail.value = false;
+  openBonusTransferDetail.value = false;
 }
 const userData = ref<UserInfo | null>(null);
 onMounted(() => {

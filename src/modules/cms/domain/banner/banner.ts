@@ -17,28 +17,28 @@ export interface Banner {
   internalType?: string;
 }
 
-function getDeviceNameByWidth(): 'mobile' | 'tablet' | 'PC' {
-  const width = window.innerWidth;
-  if (width < 479) {
-    return 'mobile';
-  }
-  if (width < 959) {
-    return 'tablet';
-  }
-  return 'PC';
-}
+// function getDeviceNameByWidth(): 'mobile' | 'tablet' | 'PC' {
+//   const width = window.innerWidth;
+//   if (width < 479) {
+//     return 'mobile';
+//   }
+//   if (width < 959) {
+//     return 'tablet';
+//   }
+//   return 'PC';
+// }
 
-export function getTheImageTypeByDevice():
-  | 'mobileImageUrl'
-  | 'tabletImageUrl'
-  | 'imageUrl' {
-  const deviceName = getDeviceNameByWidth();
-  switch (deviceName) {
-    case 'mobile':
-      return 'mobileImageUrl';
-    case 'tablet':
-      return 'tabletImageUrl';
-    default:
-      return 'imageUrl';
-  }
-}
+// export function getTheImageTypeByDevice():
+//   | 'mobileImageUrl'
+//   | 'tabletImageUrl'
+//   | 'imageUrl' {
+//   const deviceName = getDeviceNameByWidth();
+//   switch (deviceName) {
+//     case 'mobile':
+//       return 'mobileImageUrl';
+//     case 'tablet':
+//       return 'tabletImageUrl';
+//     default:
+//       return 'imageUrl';
+//   }
+// }

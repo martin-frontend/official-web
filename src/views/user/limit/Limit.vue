@@ -1,25 +1,17 @@
 <template>
-  <Container>
-    <Heading
-      :title="t('payment.limits.title')"
-      :define="t('payment.limits.define')"
-    />
-
-    <hr class="page-divider" />
-
-    <Heading :title="t('payment.limits.type_of_limit.title')" />
+  <div class="limit">
+    <Heading :define="t('payment.limits.define')" />
 
     <TypeOfLimit />
     <RealityCheck />
     <ActiveLimitTable />
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { onMounted } from 'vue';
 import { getAllUserLimit } from '@/modules/userLimit/application/limit';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import ActiveLimitTable from './component/ActiveLimitTable.vue';
 import RealityCheck from './component/RealityCheck.vue';
@@ -37,5 +29,8 @@ onMounted(() => {
 @import '@/styles/breakpoints.scss';
 ::v-deep(.p-dropdown-trigger) {
   display: none;
+}
+.limit {
+  text-align: left;
 }
 </style>

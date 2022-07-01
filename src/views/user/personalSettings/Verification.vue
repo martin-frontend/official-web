@@ -1,9 +1,6 @@
 <template>
-  <Container>
-    <Heading
-      :title="t('kyc_verified.title')"
-      :define="t('kyc_verified.define')"
-    />
+  <div>
+    <Heading :define="t('kyc_verified.define')" />
     <!-- Step1 - Proof of identification -->
     <section class="step-wrap">
       <VerificationStepTitle
@@ -824,7 +821,7 @@
         </div>
       </div>
     </section>
-  </Container>
+  </div>
   <!-- Dialog -->
   <VerifiedDialog v-model:visible="displayModal" @close="close" />
 </template>
@@ -838,7 +835,6 @@ import {
   uploadPlayerKycL2,
 } from '@/modules/user/Infrastructure/api/kyc.api';
 // import { PlayerKyc } from '@/modules/user/domain/user.kyc';
-import Container from '@/layout/Container.vue';
 import Button from '@/components/Button.vue';
 import Heading from '@/components/Heading.vue';
 import Text from '@/components/Typography.vue';
@@ -995,6 +991,9 @@ onMounted(() => {
 .step-wrap {
   & + & {
     margin-top: 24px;
+  }
+  .step-title {
+    text-align: left;
   }
 }
 .step-actions {

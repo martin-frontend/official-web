@@ -2,46 +2,41 @@
   <div class="banner-wrap">
     <div class="banner-main" :class="`temp${bannerEvent.layout}`">
       <div class="banner-content">
-        <div class="banner-title">{{ bannerEvent.title }}</div>
-        <div class="banner-subtitle">
+        <div v-if="bannerEvent.showTitle" class="banner-title">
+          {{ bannerEvent.title }}
+        </div>
+        <div v-if="bannerEvent.showSubtitle" class="banner-subtitle">
           <div class="banner-text">
             {{ bannerEvent.subtitle }}
           </div>
         </div>
-        <div class="banner-actions">
-          <!-- todo: 根據欲跳轉的頁面類型（game or event）設定指定路由 -->
+        <div v-if="bannerEvent.showButton" class="banner-actions">
           <a
             v-if="bannerEvent.externalLink"
             class="banner-button"
             :href="bannerEvent.externalLink"
             :target="bannerEvent.htmlTarget"
           >
-            {{ t('common.load_more') }}
+            {{ t('common.start') }}
           </a>
           <router-link v-else to="/">
             <button class="banner-button">
-              {{ t('common.load_more') }}
+              {{ t('common.start') }}
             </button>
           </router-link>
         </div>
       </div>
     </div>
     <div class="banner-bg">
-      <picture>
-        <source
-          :srcset="`${imagePath}${bannerEvent.imageUrl}`"
-          media="(min-width: 1023px)"
-        />
-        <source
-          :srcset="`${imagePath}${bannerEvent.tabletImageUrl}`"
-          media="(min-width: 767px)"
-        />
-        <source
-          :srcset="`${imagePath}${bannerEvent.mobileImageUrl}`"
-          media="(min-width: 359px)"
-        />
-        <img :src="`${imagePath}${bannerEvent.imageUrl}`" />
-      </picture>
+      <template v-if="device === Device.DESKTOP">
+        <Image :src="`${imagePath}${bannerEvent.imageUrl}`" />
+      </template>
+      <template v-else-if="device === Device.MOBILE">
+        <Image :src="`${imagePath}${bannerEvent.mobileImageUrl}`" />
+      </template>
+      <template v-else>
+        <Image :src="`${imagePath}${bannerEvent.tabletImageUrl}`" />
+      </template>
     </div>
   </div>
 </template>
@@ -50,13 +45,20 @@
 import { defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Banner } from '@/modules/cms/domain/banner/banner';
+import { useDevice } from '@/core/mediaQuery/useDevice';
+import { Device } from '@/core/mediaQuery/device';
+import Image from '@/components/Image.vue';
 
 export interface BannerLayoutProps {
   bannerEvent: Banner;
 }
 
 const { t } = useI18n();
+
+const device = useDevice();
+
 const imagePath = `${process.env.VUE_APP_IMAGE_DOMAIN}/file?path=`;
+
 defineProps<BannerLayoutProps>();
 </script>
 
@@ -113,13 +115,17 @@ defineProps<BannerLayoutProps>();
   }
 
   .banner-bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     overflow: hidden;
+
     img {
+      object-fit: cover;
       width: 100%;
       height: 100%;
-      object-fit: cover;
     }
   }
 

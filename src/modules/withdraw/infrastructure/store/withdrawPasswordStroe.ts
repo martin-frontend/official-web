@@ -23,6 +23,7 @@ interface WithdrawPasswordStoreState {
   id: number;
   amount: number;
   withdrawalPassword: string;
+  zIndex?: number;
 }
 
 const useWithdrawPasswordStore = defineStore('withdrawPassword', {
@@ -39,6 +40,7 @@ const useWithdrawPasswordStore = defineStore('withdrawPassword', {
     id: 0,
     amount: 0,
     withdrawalPassword: '',
+    zIndex: -1,
   }),
   actions: {
     popUp({
@@ -62,6 +64,7 @@ const useWithdrawPasswordStore = defineStore('withdrawPassword', {
       if (curDialogType) this.curDialogType = curDialogType;
       if (amount) this.amount = amount;
       this.isShown = true;
+      this.zIndex = 9999;
     },
 
     setValue(value: WithdrawalPaymentMethod) {
@@ -72,7 +75,10 @@ const useWithdrawPasswordStore = defineStore('withdrawPassword', {
     },
 
     close() {
-      this.$reset();
+      this.isShown = false;
+      setTimeout(() => {
+        this.$reset();
+      }, 300);
     },
   },
 });

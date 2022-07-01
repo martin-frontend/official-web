@@ -11,24 +11,39 @@
           <slot />
           <div class="toast-box">
             <div class="toast-icon">
-              <IconBase
-                :width="26"
-                :height="26"
-                icon-color="#fff"
-                viewBox="0 0 30 30"
-              >
-                <IconCheckCircle
-                  v-show="toast.isIconCheckCircle"
-                  :width="30"
-                  :height="30"
-                />
-                <IconBan v-show="toast.isIconBan" :width="30" :height="30" />
-                <IconInfoCircle
-                  v-show="toast.isIconInfoCircle"
-                  :width="30"
-                  :height="30"
-                />
-              </IconBase>
+              <template v-if="!toast.isIconError">
+                <IconBase
+                  :width="26"
+                  :height="26"
+                  icon-color="#fff"
+                  viewBox="0 0 30 30"
+                >
+                  <IconCheckCircle
+                    v-if="toast.isIconCheckCircle"
+                    :width="30"
+                    :height="30"
+                  />
+                  <IconBan v-if="toast.isIconBan" :width="30" :height="30" />
+                  <IconInfoCircle
+                    v-if="toast.isIconInfoCircle"
+                    :width="30"
+                    :height="30"
+                  />
+                </IconBase>
+              </template>
+
+              <template v-else>
+                <IconBase
+                  v-if="toast.isIconError"
+                  :width="26"
+                  :height="26"
+                  icon-color="#fff"
+                  viewBox="0 0 30 30"
+                  class="error"
+                >
+                  <IconClose :width="12" :height="12" />
+                </IconBase>
+              </template>
             </div>
             <div class="toast-text">
               <div class="toast-title">{{ toast.toastTitle }}</div>
@@ -119,7 +134,7 @@ const { toastContent } = storeToRefs(toastStore);
   position: fixed;
   width: 100%;
   height: 0;
-  top: 158px;
+  top: 60px;
   z-index: 99;
 
   .popup-container {
@@ -171,5 +186,10 @@ const { toastContent } = storeToRefs(toastStore);
   &.accent {
     background-color: var(--primary-color);
   }
+}
+
+.error {
+  border: 1px solid #fff;
+  border-radius: 50%;
 }
 </style>

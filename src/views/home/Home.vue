@@ -23,7 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import updateBanners from '@/modules/cms/application/banner/banner';
+// import updateBanners from '@/modules/cms/application/banner/banner';
 import useBannerStore from '@/modules/cms/infrastructure/gameType/store/bannerStore';
 import useGameTypeStore from '@/modules/cms/infrastructure/gameType/store/gameTypeStore';
 import BannerCarousel from '@/components/BannerCarousel.vue';
@@ -31,13 +31,14 @@ import Container from '@/layout/Container.vue';
 import { verifyEmail } from '@/modules/user/Infrastructure/api/verifyEmail.api';
 import VerifyEmailOkDialog from './VerifyEmailOkDialog.vue';
 import GamesGroup from '@/components/GamesGroup.vue';
+import { checkUserStatus } from '@/modules/user/application/user';
 import Button from '@/components/Button.vue';
 import {
   initGameTypes,
   updateGameType,
 } from '@/modules/cms/application/gameType/gameType';
 import { PageType } from '@/modules/cms/domain/pageType';
-import { checkUserStatus } from '@/modules/user/application/user';
+import router from '../../router';
 
 const { t } = useI18n();
 const curPageType = ref<PageType>('HOME');
@@ -53,9 +54,12 @@ async function checkedMailVerification() {
   if (route.path.includes('email-verification')) {
     if (await checkUserStatus()) {
       const token = route.query.token as string;
+
       verifyEmail(token).then(() => {
         emailVerifying.value = true;
       });
+
+      router.push('/');
     }
   }
 }
@@ -68,9 +72,8 @@ function handleLoadMore(gameTypesIndex: number) {
 }
 
 onMounted(() => {
-  checkUserStatus();
   initGameTypes(curPageType.value);
-  updateBanners(curPageType.value);
+  // updateBanners(curPageType.value);
   checkedMailVerification();
 });
 </script>

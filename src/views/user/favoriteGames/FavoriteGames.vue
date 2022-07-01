@@ -1,5 +1,5 @@
 <template>
-  <Container>
+  <div>
     <div class="bonus-block-group">
       <Heading
         :title="t('payment.favorite_games.title')"
@@ -11,13 +11,12 @@
         @remove-favorite-callback="updateFavoriteGames"
       />
     </div>
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Container from '@/layout/Container.vue';
 import GamesGroup from '@/components/GamesGroup.vue';
 import Heading from '@/components/Heading.vue';
 import {

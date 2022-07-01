@@ -1,16 +1,15 @@
 <template>
-  <Container>
+  <div>
     <div class="refer-friend-wrap">
       <ReferFriendContent />
       <ReferFriendTotal />
     </div>
     <ReferFriendDefine />
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import Container from '@/layout/Container.vue';
 import ReferFriendContent from './component/ReferFriendContent.vue';
 import ReferFriendTotal from './component/ReferFriendTotal.vue';
 import ReferFriendDefine from './component/ReferFriendDefine.vue';

@@ -2,8 +2,6 @@ import { closeSubscribe, startSubscribe } from '@/core/auth/authApi';
 import useAuthStore from '@/core/auth/authStore';
 import checkAuthToken from '@/core/auth/checkAuthToken';
 import clearAuth from '@/core/auth/clearAuth';
-import useVisitorIdStore from '@/core/auth/visitorId';
-import getVisitorId from '@/core/services/visitorId';
 import { updateAmount } from '@/modules/userBalance/application/balance';
 import { UserInfo } from '../domain/user.model';
 import getApiUserInfo from '../Infrastructure/api/userInfoApi';
@@ -28,9 +26,6 @@ async function waitUntilCheckingPromiseComplete(): Promise<void> {
 }
 
 export async function checkUserStatus(): Promise<boolean> {
-  const visitorIdStore = useVisitorIdStore();
-  const visitorId = await getVisitorId();
-  visitorIdStore.setVisitorId(visitorId);
   const authStore = useAuthStore();
   const userStore = useUserStore();
 

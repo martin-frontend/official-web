@@ -16,8 +16,9 @@
       </div>
       <div class="confirmDialog-define">
         <div>
-          {{ t('personal_settings.otp_expired') }}{{ ' ' }}{{ mins }}{{ ':'
-          }}{{ secs }}
+          {{ t('personal_settings.otp_expired') }}{{ ' '
+          }}{{ mins < 10 ? '0' + mins : mins }}{{ ':'
+          }}{{ secs < 10 ? '0' + secs : secs }}
         </div>
         <div>
           {{ t('personal_settings.have_verified_mobile_number') }}
@@ -108,6 +109,7 @@ import IconCheck from '@/components/icons/IconCheck.vue';
 
 export interface VerifyPhoneDialogProps {
   visible: boolean;
+  submit?: (code: string) => void;
 }
 
 const props = defineProps<VerifyPhoneDialogProps>();
@@ -169,8 +171,19 @@ function closeConfirmDialog() {
   isOtpErr.value = false;
 }
 
-function sendOtpCode() {
+async function sendOtpCode() {
   isOtpErr.value = false;
+
+  if (typeof props.submit === 'function') {
+    try {
+      await props.submit(otpCode.value);
+    } catch (e) {
+      isOtpErr.value = true;
+      errorMessage.value = e as string;
+    }
+    return;
+  }
+
   verifyPhoneNumber(otpCode.value)
     .then(() => {
       displayCorrectDialog.value = true;

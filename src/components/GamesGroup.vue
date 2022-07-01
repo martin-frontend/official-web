@@ -9,21 +9,15 @@
       <div class="games-group">
         <div v-for="game of games" :key="game.id" class="games-group-item">
           <div class="game-kv">
-            <picture>
-              <source
-                :srcset="`${imagePath}${game.imageUrl}`"
-                media="(max-width: 1023px)"
-              />
-              <source
-                :srcset="`${imagePath}${game.tabletImageUrl}`"
-                media="(max-width: 768x)"
-              />
-              <source
-                :srcset="`${imagePath}${game.mobileImageUrl}`"
-                media="(max-width: 359px)"
-              />
-              <img :src="`${imagePath}${game.imageUrl}`" />
-            </picture>
+            <template v-if="device === Device.DESKTOP">
+              <Image :src="`${imagePath}${game.imageUrl}`" />
+            </template>
+            <template v-else-if="device === Device.MOBILE">
+              <Image :src="`${imagePath}${game.mobileImageUrl}`" />
+            </template>
+            <template v-else>
+              <Image :src="`${imagePath}${game.tabletImageUrl}`" />
+            </template>
 
             <!-- @touchstart="1" is to fix Safari not compatible with the active of CSS -->
             <div class="game-panel" @touchstart="1">
@@ -88,6 +82,9 @@ import IconHeart from '@/components/icons/IconHeart.vue';
 import { Game, PlayGameType } from '@/modules/game/domain/game.model';
 import { playGameTypeEvent } from '@/modules/game/application/gamePlay';
 import { removeFavoriteGame } from '@/modules/favoriteGames/infrastructure/favoriteGamesApi';
+import { useDevice } from '@/core/mediaQuery/useDevice';
+import { Device } from '@/core/mediaQuery/device';
+import Image from '@/components/Image.vue';
 
 withDefaults(
   defineProps<{
@@ -103,6 +100,8 @@ withDefaults(
 const emit = defineEmits<{
   (e: 'removeFavoriteCallback'): void;
 }>();
+
+const device = useDevice();
 
 const router = useRouter();
 
@@ -137,24 +136,20 @@ const handleFavoriteEvent = async (gameId: number) => {
 
     .games-group-item {
       width: calc(25% - 24px);
-      height: calc(25% - 24px);
       margin: 12px;
 
       @include tablet-h {
         width: calc(25% - 20px);
-        height: calc(25% - 20px);
         margin: 10px;
       }
 
       @include tablet-v {
         width: calc(33% - 20px);
-        height: calc(33% - 20px);
         margin: 10px;
       }
 
       @include mobile {
         width: calc(50% - 12px);
-        height: calc(50% - 12px);
         margin: 6px;
       }
 
@@ -165,12 +160,6 @@ const handleFavoriteEvent = async (gameId: number) => {
         width: 100%;
         height: 100%;
         overflow: hidden;
-
-        img {
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
-        }
 
         .game-panel {
           position: absolute;

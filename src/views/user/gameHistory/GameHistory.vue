@@ -1,10 +1,7 @@
 <template>
-  <Container>
+  <div>
     <div class="bonus-block-group">
-      <Heading
-        :title="t('payment.game_history.title')"
-        :define="t('payment.game_history.define')"
-      />
+      <Heading :define="t('payment.game_history.define')" />
 
       <FiltersWrap
         v-model:start-time="startTime"
@@ -136,21 +133,17 @@
       :total-rows="totalRows"
       @update:page="updateGameHistory"
     />
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import moment from 'moment';
 import { onMounted, ref, computed } from 'vue';
-// import Calendar from 'primevue/calendar';
 import FormGroup from 'vue-reactive-form';
 import AutoComplete from 'primevue/autocomplete';
 import Heading from '@/components/Heading.vue';
-import Container from '@/layout/Container.vue';
 import IconBase from '@/components/icons/IconBase.vue';
-// import IconCalendar from '@/components/icons/IconCalendar.vue';
-// import Button from '@/components/Button.vue';
 import IconFilledArrow from '@/components/icons/IconFilledArrow.vue';
 // import InputBox from '@/components/InputBox.vue';
 import { formatTime } from '@/libs/date';
@@ -334,10 +327,10 @@ const filterGameName = (gameId: number): string => {
   return '';
 };
 
-const searchGameName = (event: any) => {
+const searchGameName = (event: { originalEvent: Event; query: string }) => {
   autoCompleteQuery.value = event.query;
   setTimeout(() => {
-    // console.log(event);
+    console.log(event);
     if (!event.query.trim().length) {
       filteredGameNames.value = [...gameTypes.value];
     } else {
@@ -351,11 +344,6 @@ const searchGameName = (event: any) => {
 const clearGameName = () => {
   queryName.value = '';
 };
-
-// const onResetWalletEvents = () => {
-//   searchGameForm.reset();
-//   queryName.value = '';
-// };
 
 const gameNamefuzzySearch = () => {
   return filteredGameNames.value.map(({ id }) => id);

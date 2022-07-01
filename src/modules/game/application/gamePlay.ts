@@ -4,7 +4,6 @@ import { updateAmount } from '@/modules/userBalance/application/balance';
 import useVisitorIdStore from '@/core/auth/visitorId';
 
 export function getGamePath(
-  basePath: string,
   id: string,
   isDemo: boolean,
   isAuthenticated: boolean
@@ -12,7 +11,7 @@ export function getGamePath(
   const visitorIdStore = useVisitorIdStore();
   return isAuthenticated === undefined
     ? ''
-    : `${basePath}api/game-provider/v1/thirdparty/game/provider${
+    : `api/game-provider/v1/thirdparty/game/provider${
         isAuthenticated && !isDemo ? '' : '/demo'
       }/${id}?visitor-id=${visitorIdStore.visitorId}`;
 }

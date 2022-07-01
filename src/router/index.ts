@@ -16,27 +16,67 @@ const routes: Array<RouteRecordRaw> = [
           import(/* webpackChunkName: "home" */ '../views/home/Home.vue'),
       },
       {
-        path: '/about-us',
-        name: 'AboutUs',
+        path: '/terms-of-service',
+        name: 'TermsOfService',
         component: () =>
           import(
-            /* webpackChunkName: "about-us" */ '../views/footer/AboutUs.vue'
+            /* webpackChunkName: "terms-of-service" */ '../views/footer/TermsOfService.vue'
           ),
       },
       {
-        path: '/bonus-terms',
-        name: 'BonusTerms',
+        path: '/responsible-gambling',
+        name: 'ResponsibleGambling',
         component: () =>
           import(
-            /* webpackChunkName: "bonus-terms" */ '../views/footer/BonusTerms.vue'
+            /* webpackChunkName: "responsible-gambling" */ '../views/footer/ResponsibleGambling.vue'
           ),
       },
       {
-        path: '/careers',
-        name: 'Careers',
+        path: '/seif-exclusion-terms',
+        name: 'SeifExclusionTerms',
         component: () =>
           import(
-            /* webpackChunkName: "careers" */ '../views/footer/Careers.vue'
+            /* webpackChunkName: "seif-exclusion-terms" */ '../views/footer/SeifExclusionTerms.vue'
+          ),
+      },
+      {
+        path: '/dispute-resolution-terms',
+        name: 'DisputeResolutionTerms',
+        component: () =>
+          import(
+            /* webpackChunkName: "dispute-resolution-terms" */ '../views/footer/DisputeResolutionTerms.vue'
+          ),
+      },
+      {
+        path: '/aml-policy',
+        name: 'AmlPolicy',
+        component: () =>
+          import(
+            /* webpackChunkName: "aml-policy" */ '../views/footer/AmlPolicy.vue'
+          ),
+      },
+      {
+        path: '/kyc-data-policies',
+        name: 'KycDataPolicies',
+        component: () =>
+          import(
+            /* webpackChunkName: "kyc-data-policies" */ '../views/footer/KycDataPolicies.vue'
+          ),
+      },
+      {
+        path: '/terms-of-accounts',
+        name: 'TermsOfAccounts',
+        component: () =>
+          import(
+            /* webpackChunkName: "terms-of-accounts" */ '../views/footer/TermsOfAccounts.vue'
+          ),
+      },
+      {
+        path: '/certification',
+        name: 'Certification',
+        component: () =>
+          import(
+            /* webpackChunkName: "certification" */ '../views/footer/Certification.vue'
           ),
       },
       {
@@ -53,14 +93,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import(
             /* webpackChunkName: "game-play" */ '../views/gamePlay/GamePlay.vue'
-          ),
-      },
-      {
-        path: '/game-rules',
-        name: 'GameRules',
-        component: () =>
-          import(
-            /* webpackChunkName: "game-rules" */ '../views/footer/GameRules.vue'
           ),
       },
       {
@@ -96,30 +128,6 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
       {
-        path: '/responsible-gambling',
-        name: 'ResponsibleGambling',
-        component: () =>
-          import(
-            /* webpackChunkName: "responsible-gambling" */ '../views/footer/ResponsibleGambling.vue'
-          ),
-      },
-      {
-        path: '/security-privacy-policy',
-        name: 'SecurityPrivacyPolicy',
-        component: () =>
-          import(
-            /* webpackChunkName: "security-privacy-policy" */ '../views/footer/SecurityPrivacyPolicy.vue'
-          ),
-      },
-      {
-        path: '/terms-of-use',
-        name: 'TermsOfUse',
-        component: () =>
-          import(
-            /* webpackChunkName: "terms-of-use" */ '../views/footer/TermsOfUse.vue'
-          ),
-      },
-      {
         path: '/user',
         name: 'User',
         component: () => import('../views/user/User.vue'),
@@ -132,12 +140,142 @@ const routes: Array<RouteRecordRaw> = [
         },
         children: [
           {
-            path: 'account-and-security',
-            name: 'AccountAndSecurity',
-            component: () =>
-              import(
-                /* webpackChunkName: "account-and-security" */ '../views/user/accountAndSecurity/AccountAndSecurity.vue'
-              ),
+            path: 'my-account',
+            name: 'MyAccount',
+            redirect: '/user/my-account/personal-settings',
+            component: () => import('../views/user/myAccount/MyAccount.vue'),
+            children: [
+              {
+                path: 'personal-settings',
+                name: 'PersonalSettings',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "personal-settings" */ '../views/user/personalSettings/PersonalSettings.vue'
+                  ),
+              },
+              {
+                path: 'verification',
+                name: 'Verification',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "verification" */ '../views/user/personalSettings/Verification.vue'
+                  ),
+              },
+              {
+                path: 'account-and-security',
+                name: 'AccountAndSecurity',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "account-and-security" */ '../views/user/accountAndSecurity/AccountAndSecurity.vue'
+                  ),
+                children: [
+                  {
+                    path: 'change-password',
+                    name: 'ChangePassword',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "change-password" */ '../views/user/accountAndSecurity/ChangePassword.vue'
+                      ),
+                  },
+                  {
+                    path: 'change-withdraw-password',
+                    name: 'ChangeWithdrawPassword',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "change-withdraw-password" */ '../views/user/accountAndSecurity/ChangeWithdrawPassword.vue'
+                      ),
+                  },
+                  {
+                    path: 'change-withdraw-account',
+                    name: 'MyWithdrawAccount',
+                    component: () =>
+                      import(
+                        /* webpackChunkName: "change-withdraw-account" */ '../views/user/accountAndSecurity/MyWithdrawAccount.vue'
+                      ),
+                  },
+                ],
+              },
+              {
+                path: 'limit',
+                name: 'Limit',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "limit" */ '../views/user/limit/Limit.vue'
+                  ),
+              },
+            ],
+          },
+          {
+            path: 'history',
+            name: 'History',
+            redirect: '/user/history/game-history',
+            component: () => import('../views/user/history/History.vue'),
+            children: [
+              {
+                path: 'game-history',
+                name: 'GameHistory',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "game-history" */ '../views/user/gameHistory/GameHistory.vue'
+                  ),
+              },
+              {
+                path: 'balance-withdraw',
+                name: 'BalanceWithdraw',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "balance-withdraw" */ '../views/user/balance/Withdraw.vue'
+                  ),
+              },
+              {
+                path: 'deposit-history',
+                name: 'DepositHistory',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "deposit-history" */ '../views/user/payment/PaymentsHistory.vue'
+                  ),
+              },
+              {
+                path: 'withdraw-history',
+                name: 'WithdrawHistory',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "withdraw-history" */ '../views/user/payment/PaymentsHistory.vue'
+                  ),
+              },
+              {
+                path: 'login-history',
+                name: 'LoginHistory',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "login-history" */ '../views/user/loginHistory/LoginHistory.vue'
+                  ),
+              },
+              {
+                path: 'payment-transactions',
+                name: 'PaymentTransactions',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "payment-transactions" */ '../views/user/payment/PaymentTransactions.vue'
+                  ),
+              },
+              {
+                path: 'bonuses-history',
+                name: 'BonusesHistory',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "bonuses-history" */ '../views/user/bonusesHistory/BonusesHistory.vue'
+                  ),
+              },
+              {
+                path: 'balance-rewards',
+                name: 'BalanceRewards',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "balance-rewards" */ '../views/user/balance/Rewards.vue'
+                  ),
+              },
+            ],
           },
           {
             path: 'balance',
@@ -148,51 +286,11 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
-            path: 'balance-rewards',
-            name: 'BalanceRewards',
-            component: () =>
-              import(
-                /* webpackChunkName: "balance-rewards" */ '../views/user/balance/Rewards.vue'
-              ),
-          },
-          {
-            path: 'balance-withdraw',
-            name: 'BalanceWithdraw',
-            component: () =>
-              import(
-                /* webpackChunkName: "balance-withdraw" */ '../views/user/balance/Withdraw.vue'
-              ),
-          },
-          {
             path: 'bonuses',
             name: 'Bonuses',
             component: () =>
               import(
                 /* webpackChunkName: "bonuses" */ '../views/user/bonuses/Bonuses.vue'
-              ),
-          },
-          {
-            path: 'bonuses-history',
-            name: 'BonusesHistory',
-            component: () =>
-              import(
-                /* webpackChunkName: "bonuses-history" */ '../views/user/bonusesHistory/BonusesHistory.vue'
-              ),
-          },
-          {
-            path: 'change-password',
-            name: 'ChangePassword',
-            component: () =>
-              import(
-                /* webpackChunkName: "change-password" */ '../views/user/accountAndSecurity/ChangePassword.vue'
-              ),
-          },
-          {
-            path: 'change-withdraw-password',
-            name: 'ChangeWithdrawPassword',
-            component: () =>
-              import(
-                /* webpackChunkName: "change-withdraw-password" */ '../views/user/accountAndSecurity/ChangeWithdrawPassword.vue'
               ),
           },
           {
@@ -212,30 +310,6 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
-            path: 'game-history',
-            name: 'GameHistory',
-            component: () =>
-              import(
-                /* webpackChunkName: "game-history" */ '../views/user/gameHistory/GameHistory.vue'
-              ),
-          },
-          {
-            path: 'limit',
-            name: 'Limit',
-            component: () =>
-              import(
-                /* webpackChunkName: "limit" */ '../views/user/limit/Limit.vue'
-              ),
-          },
-          {
-            path: 'login-history',
-            name: 'LoginHistory',
-            component: () =>
-              import(
-                /* webpackChunkName: "login-history" */ '../views/user/loginHistory/LoginHistory.vue'
-              ),
-          },
-          {
             path: 'my-rewards',
             name: 'MyRewards',
             component: () =>
@@ -244,44 +318,11 @@ const routes: Array<RouteRecordRaw> = [
               ),
           },
           {
-            path: 'payment-transactions',
-            name: 'PaymentTransactions',
-            component: () =>
-              import(
-                /* webpackChunkName: "payment-transactions" */ '../views/user/payment/PaymentTransactions.vue'
-              ),
-          },
-          {
-            path: 'payments-history',
-            name: 'PaymentsHistory',
-            component: () =>
-              import(
-                /* webpackChunkName: "payments-history" */ '../views/user/payment/PaymentsHistory.vue'
-              ),
-          },
-
-          {
-            path: 'personal-settings',
-            name: 'PersonalSettings',
-            component: () =>
-              import(
-                /* webpackChunkName: "personal-settings" */ '../views/user/personalSettings/PersonalSettings.vue'
-              ),
-          },
-          {
             path: 'refer-friend',
             name: 'ReferFriend',
             component: () =>
               import(
                 /* webpackChunkName: "refer-friend" */ '../views/user/referFriend/ReferFriend.vue'
-              ),
-          },
-          {
-            path: 'verification',
-            name: 'Verification',
-            component: () =>
-              import(
-                /* webpackChunkName: "verification" */ '../views/user/personalSettings/Verification.vue'
               ),
           },
           {
@@ -307,8 +348,11 @@ const routes: Array<RouteRecordRaw> = [
   },
 ];
 
-const router = createRouter({
-  history: createWebHistory(process.env.VUE_APP_BASE_PATH || ''),
+export const baseHref =
+  document.head?.querySelector('base')?.getAttribute('href') || '/';
+
+export const router = createRouter({
+  history: createWebHistory(baseHref),
   scrollBehavior() {
     return { top: 0 };
   },

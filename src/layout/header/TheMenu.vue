@@ -1,154 +1,116 @@
 <template>
   <teleport to="#app">
-    <div v-show="isMenuShown" class="menu" @click.self="closeMenu">
-      <div class="container">
+    <Transition name="fade">
+      <Mask v-if="isMenuShown" @click.self="closeMenu" />
+    </Transition>
+
+    <Transition name="left">
+      <div v-if="isMenuShown" class="container">
         <div class="top-area">
           <IconBase
             class="icon-hamburger"
             :width="24"
             :height="24"
             viewBox="0 0 24 24"
-            icon-color="#000"
             @click="closeMenu"
           >
-            <IconHamburger />
+            <IconHamburgerMinus />
           </IconBase>
 
           <div class="logo-container">
-            <router-link to="/" exact>
+            <router-link to="/">
               <div class="logo">{{ 'LOGO' }}</div>
             </router-link>
           </div>
 
           <div class="recommend-search-button" @click="showRecommend">
             <div class="icon-search">
-              <IconBase
-                :width="16"
-                :height="16"
-                viewBox="0 0 16 16"
-                icon-color="#000"
-              >
+              <IconBase :width="16" :height="16" viewBox="0 0 16 16">
                 <IconSearch />
               </IconBase>
             </div>
           </div>
         </div>
 
-        <div class="line" />
+        <div class="content-area normal">
+          <template v-for="{ name, path, icon } of normalOptions" :key="name">
+            <router-link :to="path">
+              <div class="wrap">
+                <IconBase
+                  class="icon-primary"
+                  :width="24"
+                  :height="24"
+                  viewBox="0 0 24 24"
+                  icon-color="#C1A14E"
+                >
+                  <component :is="icon" />
+                </IconBase>
 
-        <div class="content-area">
-          <router-link to="/" exact>
-            <div class="wrap">
-              <IconBase
-                class="icon-primary"
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                icon-color="#C1A14E"
-              >
-                <IconHome />
-              </IconBase>
-              <IconBase
-                class="icon-hover"
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                icon-color="#000"
-              >
-                <IconHome />
-              </IconBase>
-              <div class="tag-name">
-                {{ 'Home' }}
+                <IconBase
+                  class="icon-hover"
+                  :width="24"
+                  :height="24"
+                  viewBox="0 0 24 24"
+                  icon-color="#fff"
+                >
+                  <component :is="icon" />
+                  >
+                </IconBase>
+                <div class="tag-name">
+                  {{ name }}
+                </div>
               </div>
-            </div>
-          </router-link>
-
-          <!-- <router-link v-slot="{ isExactActive }" to="/user">
-            <div class="wrap">
-              <IconBase
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                :icon-color="isExactActive ? '#000' : '#C1A14E'"
-              >
-                <IconHome />
-              </IconBase>
-              <div class="tag-name">
-                {{ 'Home' }}
-              </div>
-            </div>
-          </router-link> -->
+            </router-link>
+          </template>
         </div>
 
-        <div class="line" />
+        <div class="content-area else">
+          <template v-for="{ name, path, icon } of elseOptions" :key="name">
+            <router-link :to="path">
+              <div class="wrap">
+                <IconBase
+                  class="icon-primary"
+                  :width="24"
+                  :height="24"
+                  viewBox="0 0 24 24"
+                  icon-color="#C1A14E"
+                >
+                  <component :is="icon" />
+                </IconBase>
 
-        <div class="content-area">
-          <router-link to="/payment-options">
-            <div class="other-wrap">
-              <IconBase
-                class="icon-primary"
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                icon-color="#C1A14E"
-              >
-                <IconPayment />
-              </IconBase>
-              <IconBase
-                class="icon-hover"
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                icon-color="#000"
-              >
-                <IconPayment />
-              </IconBase>
-              <div class="other-tag-name">
-                {{ 'Payment Options' }}
+                <IconBase
+                  class="icon-hover"
+                  :width="24"
+                  :height="24"
+                  viewBox="0 0 24 24"
+                  icon-color="#fff"
+                >
+                  <component :is="icon" />
+                  >
+                </IconBase>
+                <div class="tag-name">
+                  {{ name }}
+                </div>
               </div>
-            </div>
-          </router-link>
-
-          <router-link to="/get-in-touch">
-            <div class="other-wrap">
-              <IconBase
-                class="icon-primary"
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                icon-color="#C1A14E"
-              >
-                <IconGetInTouch />
-              </IconBase>
-              <IconBase
-                class="icon-hover"
-                :width="24"
-                :height="24"
-                viewBox="0 0 24 24"
-                icon-color="#000"
-              >
-                <IconGetInTouch />
-              </IconBase>
-              <div class="other-tag-name">
-                {{ 'Get in Touch' }}
-              </div>
-            </div>
-          </router-link>
+            </router-link>
+          </template>
         </div>
       </div>
-    </div>
+    </Transition>
   </teleport>
 </template>
 
 <script setup lang="ts">
-import { defineProps, withDefaults, toRefs, defineEmits } from 'vue';
+import { defineProps, withDefaults, toRefs, defineEmits, computed } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 import IconBase from '@/components/icons/IconBase.vue';
-import IconHamburger from '@/components/icons/IconHamburger.vue';
 import IconHome from '@/components/icons/IconHome.vue';
 import IconSearch from '@/components/icons/IconSearch.vue';
 import IconPayment from '@/components/icons/IconPayment.vue';
 import IconGetInTouch from '@/components/icons/IconGetInTouch.vue';
+import Mask from '@/components/Mask.vue';
+import IconHamburgerMinus from '@/components/icons/IconHamburgerMinus.vue';
+import IconPromotionsVue from '@/components/icons/IconPromotions.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -163,6 +125,16 @@ const emit = defineEmits<{
   (e: 'handleShowMenu', value: boolean): void;
   (e: 'handleShowRecommend'): void;
 }>();
+
+const normalOptions = computed(() => [
+  { path: '/', name: 'Home', icon: IconHome },
+]);
+
+const elseOptions = computed(() => [
+  { path: '/promotions', name: 'Promotions', icon: IconPromotionsVue },
+  { path: '/payment-options', name: 'Payment Options', icon: IconPayment },
+  { path: '/get-in-touch', name: 'Get in Touch', icon: IconGetInTouch },
+]);
 
 const closeMenu = () => {
   emit('handleShowMenu', false);
@@ -181,143 +153,134 @@ const { isMenuShown } = toRefs(props);
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/breakpoints.scss';
-.menu {
+@import '@/styles/transition.scss';
+@import '@/styles/breakpoints.scss';
+.container {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
   left: 0;
+  top: 56px;
+  width: 248px;
+  height: 100%;
+  background: #323232;
+  z-index: 10;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
   z-index: 11;
-  .container {
-    position: fixed;
-    left: 0;
+
+  @include mobile {
     top: 0;
-    width: 320px;
-    height: 100%;
-    max-height: 869px;
-    background: #323232;
-    z-index: 10;
-    overflow-x: auto;
-    display: flex;
-    flex-direction: column;
+    width: 280px;
+    max-height: unset;
+  }
+
+  .icon-hamburger {
+    cursor: pointer;
+  }
+
+  .top-area {
+    height: 56px;
+    min-height: 56px;
+    display: none;
+    align-items: center;
+    margin: 0 16px;
+    border-bottom: 1px solid var(--primary-color);
 
     @include mobile {
-      width: 280px;
-      max-height: unset;
+      display: flex;
     }
 
-    .top-area {
-      height: 56px;
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      margin: 0 16px;
-
-      .logo-container {
-        flex: 1;
-        height: 100%;
-        .logo {
-          color: var(--primary-color);
-          font-weight: 500;
-          font-size: 38px;
-          font-family: var(--font-family);
-          line-height: 56px;
-          text-align: center;
-
-          @include mobile {
-            display: none;
-          }
-        }
-      }
-
-      .recommend-search-button {
-        display: none;
+    .logo-container {
+      flex: 1;
+      height: 100%;
+      .logo {
+        color: var(--primary-color);
+        font-weight: 500;
+        font-size: 38px;
+        font-family: var(--font-family);
+        line-height: 56px;
+        text-align: center;
 
         @include mobile {
-          display: inline-flex;
-        }
-
-        .icon-search {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #000000;
-          border: 1px solid #505050;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          cursor: pointer;
+          display: none;
         }
       }
     }
 
-    .content-area {
-      padding: 12px 0;
+    .recommend-search-button {
+      display: none;
 
-      a {
+      @include mobile {
+        display: inline-flex;
+      }
+
+      .icon-search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000000;
+        border: 1px solid #505050;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .content-area {
+    padding: 15px 0;
+    margin: 0 16px;
+    &.normal {
+      display: none;
+      border-bottom: 1px solid var(--primary-color);
+
+      @include mobile {
         display: block;
-        height: 56px;
+      }
+    }
 
-        .wrap,
-        .other-wrap {
-          height: 100%;
-          display: flex;
-          align-items: center;
-          padding: 0 24px;
+    a {
+      display: block;
+      height: 56px;
 
-          &:hover {
-            background: linear-gradient(180deg, #f0c879 0%, #a8772b 100%);
-            .icon-primary {
-              display: none;
-            }
-            .icon-hover {
-              display: inline-block;
-            }
+      .wrap {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-radius: 6px;
 
-            .tag-name,
-            .other-tag-name {
-              color: #000;
-            }
-          }
-
-          .icon-hover {
+        &:hover {
+          background: black;
+          .icon-primary {
             display: none;
           }
-
-          .tag-name,
-          .other-tag-name {
-            margin-left: 24px;
-            color: #fff;
-            font-size: 16px;
-            line-height: 20px;
-            font-weight: 500;
+          .icon-hover {
+            display: inline-block;
           }
 
-          .other-tag-name {
-            color: var(--primary-color);
+          .tag-name {
+            color: #fff;
           }
         }
 
-        // &.router-link-exact-active {
-        //   .wrap {
-        //     background: linear-gradient(180deg, #f0c879 0%, #a8772b 100%);
+        .icon-hover {
+          display: none;
+        }
 
-        //     .tag-name {
-        //       color: #000;
-        //     }
-        //   }
-        // }
+        .tag-name {
+          margin-left: 24px;
+          color: #fff;
+          font-size: 16px;
+          line-height: 20px;
+          font-weight: 500;
+        }
       }
     }
 
-    .line {
-      max-height: 1px;
-      height: 1px;
-      background: var(--primary-color);
-      flex: 1;
-      margin: 0 16px;
-      padding: 0.5px 0;
+    &.else .wrap .tag-name {
+      color: var(--primary-color);
     }
   }
 }

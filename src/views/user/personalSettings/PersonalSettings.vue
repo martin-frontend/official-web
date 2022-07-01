@@ -1,10 +1,7 @@
 /* eslint-disable no-unused-vars */
 <template>
-  <Container>
-    <Heading
-      :title="t('personal_settings.title')"
-      :define="t('personal_settings.define')"
-    />
+  <div>
+    <Heading :define="t('personal_settings.define')" />
     <div class="informations-wrap">
       <div class="informations-wrap-item">
         <!-- Basic Information -->
@@ -30,7 +27,11 @@
                     <Text device="mobile">{{ allInfos?.name }}</Text>
                   </div>
                   <div v-if="allInfos?.nameUpdatable" class="infoList-action">
-                    <Button variant="outlined" size="small">
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      @click="setNoticeDialog"
+                    >
                       {{ 'Update' }}
                     </Button>
                   </div>
@@ -283,7 +284,7 @@
                     >
                       <IcondoubleCheck />
                     </IconBase>
-                    <router-link v-else to="/user/Verification">
+                    <router-link v-else to="/user/my-account/verification">
                       <Button size="small">
                         {{ 'Verification' }}
                       </Button>
@@ -317,7 +318,10 @@
               </Text>
             </div>
           </div>
-          <router-link class="security-button" to="/user/account-and-security">
+          <router-link
+            class="security-button"
+            to="/user/my-account/account-and-security"
+          >
             <Button variant="outlined" size="small">
               {{ t('common.update') }}
             </Button>
@@ -368,9 +372,10 @@
         </Text>
       </div>
     </div>
-  </Container>
+  </div>
   <VerifyEmailDialog v-model:visible="emailDialog" @close="close" />
   <VerifyPhoneDialog v-model:visible="phoneNumberDialog" @close="close" />
+  <UpdateNameDialog v-model:visible="updateNameDialog" @close="close" />
 </template>
 
 <script lang="ts" setup>
@@ -381,7 +386,6 @@ import { UserInfo } from '@/modules/user/domain/user.model';
 import getUserInfo from '@/modules/user/application/user';
 import updateConsents from '@/modules/user/Infrastructure/api/consent.api';
 import sendVerificationEmail from '@/modules/user/Infrastructure/api/verifyEmail.api';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import Text from '@/components/Typography.vue';
 import Button from '@/components/Button.vue';
@@ -390,13 +394,16 @@ import IconBase from '@/components/icons/IconBase.vue';
 import IcondoubleCheck from '@/components/icons/IcondoubleCheck.vue';
 import VerifyEmailDialog from './VerifyEmailDialog.vue';
 import VerifyPhoneDialog from './VerifyPhoneDialog.vue';
-// ---
 import { sendPhoneNumberOtp } from '@/modules/user/Infrastructure/api/verifyPhone.api';
+import useDialogStore from '@/core/shared/dialogStore';
+import UpdateNameDialog from './UpdateNameDialog.vue';
+import { usePathName } from '@/core/pathName/usePathName';
 
 const { t } = useI18n();
 
 const phoneNumberDialog = ref(false);
 const emailDialog = ref(false);
+const updateNameDialog = ref(false);
 const userData = ref<UserInfo | null>(null);
 const allInfos = computed(() => {
   const data = userData.value;
@@ -430,9 +437,31 @@ const userNameLetter = computed(() =>
   userData.value?.firstname?.substring(0, 2)
 );
 
+const dialogStore = useDialogStore();
+
+const setNoticeDialog = () => {
+  dialogStore.popUp({
+    title: t('common.notice'),
+    message: t('personal_settings.update_name_warning'),
+    secondMessage: t('personal_settings.update_name_note'),
+    isCancelButtonShown: true,
+    onCancel() {
+      dialogStore.close();
+    },
+    isOkButtonShown: false,
+    isOtherOkButtonShown: true,
+    okOtherButtonText: t('common.update'),
+    onOtherOk() {
+      updateNameDialog.value = true;
+      dialogStore.close();
+    },
+  });
+};
+
 function close() {
   phoneNumberDialog.value = false;
   emailDialog.value = false;
+  updateNameDialog.value = false;
   getUserInfo().then((data) => {
     userData.value = data;
     isChecked.value = data?.notificationEnabled;
@@ -440,14 +469,18 @@ function close() {
 }
 
 function verifyOtp() {
-  sendPhoneNumberOtp().then(() => {
-    phoneNumberDialog.value = true;
-  });
+  phoneNumberDialog.value = true;
+  sendPhoneNumberOtp();
 }
+
+const pathName = usePathName();
 
 function verifyEmail() {
   emailDialog.value = true;
-  sendVerificationEmail(allInfos.value?.email).then(() => {
+
+  const emailLinkUrlPath = `${pathName}/email-verification`;
+
+  sendVerificationEmail(emailLinkUrlPath).then(() => {
     emailDialog.value = true;
   });
 }

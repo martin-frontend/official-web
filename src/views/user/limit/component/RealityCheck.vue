@@ -24,23 +24,6 @@
   </form>
 
   <hr class="page-divider" />
-  <Heading
-    :title="t('payment.limits.active_limits.title')"
-    :define="t('payment.limits.active_limits.define')"
-  />
-
-  <ul class="limit-description">
-    <li>
-      {{
-        'If you have more than one limit in place, the lowest limit will be valid. Example: If you have a limit of 500 a month and 200 a day, you will not be able to deposit more than 200 a day and also no more than 500 a month.'
-      }}
-    </li>
-    <li>
-      {{
-        "If you want to reduce your limit, it will be done immediately. However if you wish to increase it, you will need to wait 24 hours for this to take effect. The date of the change in limits will be visible in 'Pending Limits'"
-      }}
-    </li>
-  </ul>
 </template>
 
 <script lang="ts" setup>

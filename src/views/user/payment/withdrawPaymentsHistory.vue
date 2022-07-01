@@ -3,7 +3,7 @@
     v-model:start-time="startDate"
     v-model:end-time="endDate"
     :date-limits="dateLimits"
-    @handleSearch="updateCompletionEvent"
+    @handleSearch="onSearchWalletEvents"
   >
     <FiltersWrapItem>
       <div class="selector">
@@ -44,12 +44,7 @@
       </div>
     </FiltersWrapItem>
   </FiltersWrap>
-  <DataTable
-    v-if="isTable"
-    :columns="columns"
-    :data="resolvedData"
-    row-key="id"
-  >
+  <DataTable v-if="isTable" :columns="columns" :data="resolvedData">
     <!-- <template #newStatus="{ record, text }">
       <Text
         :color="
@@ -63,6 +58,9 @@
         {{ text }}
       </Text>
     </template> -->
+    <template #order="{ rowIndex }">
+      {{ rowIndex + 1 }}
+    </template>
     <template #time="{ record }">
       <Text component="div" size="tiny">{{ record.date }}</Text>
       <Text component="div" size="tiny">{{ record.time }}</Text>
@@ -89,6 +87,7 @@
             <template #order>
               {{ index + 1 }}
             </template>
+            <template #time>{{ record.date }}&nbsp;{{ record.time }}</template>
             <!-- <template #status="{ text }">
               <Text
                 size="sm"
@@ -176,6 +175,7 @@ import {
   WithdrawPaymentsHistory,
   UserInfo,
   PaymentType,
+  GetWithdrawPaymentsHistoryDto,
 } from '@/modules/paymentsHistory/domain/paymentsHistory.model';
 import Text from '@/components/Typography.vue';
 import {
@@ -203,6 +203,10 @@ const { t } = useI18n();
 const paymentType = ref<PaymentType[]>([]);
 
 const columns = [
+  {
+    key: 'order',
+    header: 'No.',
+  },
   {
     key: 'id',
     header: 'Audit number',
@@ -242,12 +246,12 @@ const columns = [
 
 const gridExpansionPanelHeaderColumns = [
   {
-    key: 'time',
-    data: 'day',
-  },
-  {
     key: 'Audit number',
     data: 'id',
+  },
+  {
+    key: 'time',
+    data: 'day',
   },
   {
     key: 'amount',
@@ -303,16 +307,16 @@ const totalrows = ref(0);
 const orderMap = ref<WithdrawalOrderObject>();
 const list = ref<WithdrawPaymentsHistory[]>([]);
 
-// ------------------------------------點擊search觸發的函式----------------------------------
+// ------------------------------------切換頁面----------------------------------
+
 function updateCompletionEvent() {
-  const update = {
+  const update: GetWithdrawPaymentsHistoryDto = {
     startTime: searchCompletedForm.refs.startDate.value,
     endTime: searchCompletedForm.refs.endDate.value,
     page: page.value - 1,
     size: 20,
     lastOrderStatusShrink: lastOrderStatusShrink.value,
   };
-
   if (update.lastOrderStatusShrink === 99) {
     delete update.lastOrderStatusShrink;
   }
@@ -424,7 +428,11 @@ function updateCompletionEvent() {
     }
   );
 }
-
+// ----------------------------------綁在搜尋---onSearchWalletEvents---------------------------------------------------
+const onSearchWalletEvents = () => {
+  page.value = 1;
+  updateCompletionEvent();
+};
 // -----------------------------------------點擊view打開詳細清單-----------------------------
 const detail = ref<WithdrawPaymentsHistory | null>(null);
 function openDialog(record: WithdrawPaymentsHistory | null) {

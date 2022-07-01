@@ -1,0 +1,27 @@
+@import '@/styles/breakpoints.scss';
+
+.new-dialog {
+  max-width: 90%;
+  padding: 40px;
+  border-radius: 10px;
+  background: #323232;
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.45);
+
+  .p-dialog-header {
+    justify-content: center;
+    padding: 0;
+    background: unset;
+    color: var(--primary-color);
+    font-size: 26px;
+    line-height: 28px;
+  }
+
+  .p-dialog-content {
+    padding: 0;
+    background: unset;
+  }
+
+  @include mobile {
+    padding: 32px;
+  }
+}

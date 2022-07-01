@@ -9,15 +9,16 @@
 .filters-wrap-item {
   margin: 5px 5px;
   flex: 1;
+  text-align: left;
 
   @include desktop {
-    max-width: 248px;
-    min-width: 248px;
+    max-width: 230px;
+    min-width: 230px;
   }
 
   @include tablet-h {
-    max-width: 196px;
-    min-width: 196px;
+    max-width: 190px;
+    min-width: 190px;
   }
 }
 </style>

@@ -1,58 +1,64 @@
 <template>
-  <div
-    v-show="recommendStore.isShown"
-    class="recommend"
-    @click.self="closeRecommend"
-  >
-    <div class="container">
-      <header>
-        <IconBase class="icon-back" @click="closeRecommend">
-          <IconArrow />
-        </IconBase>
-        <p>{{ t('common.search') }}</p>
-      </header>
-      <div class="buttons-wrap">
-        <InputBox
-          v-model="queryObject.search"
-          class="search-input"
-          :label="t('recommend.input')"
-        />
-        <Button
-          class="search-button"
-          component="button"
-          color="primary"
-          size="large"
-          @click="searchGames"
-        >
-          {{ t('common.search') }}
-        </Button>
-      </div>
-      <Heading :title="t('recommend.title')" :define="noDataMessage" />
-      <div v-show="recommendStore.isNoData" class="message" />
-      <div class="game-list">
-        <div
-          v-for="game of recommendStore.searchContent"
-          :key="game.id"
-          class="list-wrap"
-          @click="playGame(game)"
-        >
-          <div class="game-img">
-            <!-- <img :src="setImagePath(game)" :alt="game.name" /> -->
-            <img :src="setImagePath(game)" :alt="game.name" />
-          </div>
-          <div class="game-content">
-            <p class="game-title">{{ game.name }}</p>
-            <p class="game-define">{{ game.category }}</p>
-          </div>
-          <div class="game-go">
-            <IconBase class="icon-go">
-              <IconArrow />
-            </IconBase>
+  <Transition name="fade">
+    <Mask v-if="recommendStore.isShown" />
+  </Transition>
+
+  <Transition name="fade">
+    <div
+      v-if="recommendStore.isShown"
+      class="recommend"
+      @click.self="closeRecommend"
+    >
+      <div class="container">
+        <header>
+          <IconBase class="icon-back" @click="closeRecommend">
+            <IconArrow />
+          </IconBase>
+          <p>{{ t('common.search') }}</p>
+        </header>
+        <div class="buttons-wrap">
+          <InputBox
+            v-model="queryObject.search"
+            class="search-input"
+            :label="t('recommend.input')"
+          />
+          <Button
+            class="search-button"
+            component="button"
+            color="primary"
+            size="large"
+            @click="searchGames"
+          >
+            {{ t('common.search') }}
+          </Button>
+        </div>
+        <Heading :title="t('recommend.title')" :define="noDataMessage" />
+        <div v-show="recommendStore.isNoData" class="message" />
+        <div class="game-list">
+          <div
+            v-for="game of recommendStore.searchContent"
+            :key="game.id"
+            class="list-wrap"
+            @click="playGame(game)"
+          >
+            <div class="game-img">
+              <!-- <img :src="setImagePath(game)" :alt="game.name" /> -->
+              <img :src="setImagePath(game)" :alt="game.name" />
+            </div>
+            <div class="game-content">
+              <p class="game-title">{{ game.name }}</p>
+              <p class="game-define">{{ game.category }}</p>
+            </div>
+            <div class="game-go">
+              <IconBase class="icon-go">
+                <IconArrow />
+              </IconBase>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script lang="ts" setup>
@@ -71,6 +77,7 @@ import { Game, PlayGameType } from '@/modules/game/domain/game.model';
 import { useDevice } from '@/core/mediaQuery/useDevice';
 import { Device } from '@/core/mediaQuery/device';
 import { playGameTypeEvent } from '@/modules/game/application/gamePlay';
+import Mask from '@/components/Mask.vue';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -139,6 +146,7 @@ onMounted(() => {
 <i18n locale="en" src="@/core/locales/en.json"></i18n>
 
 <style lang="scss" scoped>
+@import '@/styles/transition.scss';
 @import '@/styles/breakpoints.scss';
 .recommend {
   width: 100%;
@@ -148,7 +156,6 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.65);
   top: 0;
   left: 0;
   z-index: 11;

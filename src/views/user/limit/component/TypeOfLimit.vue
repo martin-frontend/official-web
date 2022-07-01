@@ -1,4 +1,5 @@
 <template>
+  <Heading :title="t('payment.limits.type_of_limit.title')" />
   <h2 class="limit-type-title">
     {{ t('payment.limits.time_limit') }}
   </h2>
@@ -162,6 +163,7 @@ import {
   TakeABreakType,
   TimeLimitType,
 } from '@/modules/userLimit/domain/limit';
+import Heading from '@/components/Heading.vue';
 
 const { t } = useI18n();
 

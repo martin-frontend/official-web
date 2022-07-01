@@ -25,6 +25,7 @@ export interface PaymentsHistory {
   depositBank: string;
   depositAccount: string;
   phoneNumber: number;
+  paymentTypeOption: string;
 }
 export interface WithdrawPaymentsHistory {
   withdrawalOrders: WithdrawalOrderArray[];
@@ -55,6 +56,7 @@ export interface WithdrawPaymentsHistory {
   // updatedBy: number | null;
   bankName: string;
   bankAccount: string;
+  amount: number;
 }
 
 export interface WithdrawalOrderArray {

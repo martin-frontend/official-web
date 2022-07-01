@@ -1,7 +1,3 @@
-<!-- 這裡目前是一個 checkbox + 一個 label 的組合，之後要拆得更細小，
-     單獨 checkbox 為一個元件，單獨 label 為一個元件，再用某種選擇器去關聯它們
-     參考：https://mui.com/components/checkboxes/ -->
-
 <template>
   <div class="checkbox">
     <input
@@ -62,7 +58,7 @@ function checked(event: Event) {
       width: 20px;
       height: 20px;
       display: block;
-      background: url(../../reference/icons/IconChecked.svg) no-repeat center
+      background: url(../../src/assets/icons/IconChecked.svg) no-repeat center
         center;
       background-size: cover;
     }

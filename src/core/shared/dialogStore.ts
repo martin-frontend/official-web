@@ -18,6 +18,7 @@ interface DialogStoreState {
   isOtherOkButtonShown: boolean;
   onOtherOk: null | ((...args: any[]) => void);
   isClockShown?: boolean;
+  zIndex?: number;
 }
 
 const useDialogStore = defineStore('dialog', {
@@ -26,19 +27,20 @@ const useDialogStore = defineStore('dialog', {
       isShown: false,
       title: '',
       message: '',
-      cancelButtonText: 'cancel',
+      cancelButtonText: 'Cancel',
       isCancelButtonShown: true,
       onCancel: null,
-      okButtonText: 'ok',
+      okButtonText: 'OK',
       isOkButtonShown: true,
       onOk: null,
       isCoinShown: false,
       isCheckShown: false,
-      secondMessage: '',
-      isClockShown: false,
-      okOtherButtonText: 'ok',
+      okOtherButtonText: 'OK',
       isOtherOkButtonShown: false,
       onOtherOk: null,
+      secondMessage: '',
+      isClockShown: false,
+      zIndex: -1,
     };
   },
   actions: {
@@ -77,9 +79,13 @@ const useDialogStore = defineStore('dialog', {
       if (isCheckShown) this.isCheckShown = isCheckShown;
       if (isClockShown) this.isClockShown = isClockShown;
       this.isShown = true;
+      this.zIndex = 9999;
     },
     close() {
-      this.$reset();
+      this.isShown = false;
+      setTimeout(() => {
+        this.$reset();
+      }, 300);
     },
   },
 });

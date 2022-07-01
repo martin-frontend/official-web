@@ -19,8 +19,8 @@ export interface PromotionEvent {
   gameTypeIds: number[];
   id: number;
   imageUrl: string;
-  normalPlayer: boolean;
   mobileImageUrl: string;
+  normalPlayer: boolean;
   officialTestPlayer: boolean;
   reacceptable: boolean;
   recommendedPlayer: boolean;

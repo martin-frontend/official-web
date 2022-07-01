@@ -181,6 +181,7 @@ onUnmounted(() => {
 .data-value {
   font-size: 14px;
   line-height: 22px;
+  text-align: right;
   @include mobile {
     font-size: 12px;
     line-height: 16px;

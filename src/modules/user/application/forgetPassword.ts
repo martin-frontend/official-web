@@ -1,15 +1,13 @@
 import useDialogStore from '@/core/shared/dialogStore';
 import applyApiForgetPassword from '../Infrastructure/api/forgetPasswordApi';
-import useForgetPasswordStore from '../Infrastructure/store/forgetPasswordStore';
 
-export async function forgetPassword(email: string): Promise<void> {
+export async function forgetPassword(dto: {
+  email: string;
+  emailLinkUrlPath?: string;
+}): Promise<void> {
   const dialogStore = useDialogStore();
   try {
-    await applyApiForgetPassword(email);
-
-    const forgetPasswordStore = useForgetPasswordStore();
-
-    forgetPasswordStore.$reset();
+    await applyApiForgetPassword(dto);
 
     dialogStore.popUp({
       title: 'Succeed',

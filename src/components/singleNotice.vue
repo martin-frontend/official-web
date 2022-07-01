@@ -1,12 +1,12 @@
 <template>
-  <div class="menu-link" @click="isRead">
-    <div class="notification-time">{{ dateAndTime }}</div>
-    <div v-show="unRead" class="read-status">{{}}</div>
+  <div class="menu-link" @click="unRead && isRead()">
+    <div class="notification-time">{{ formateDate }}</div>
+    <div v-show="unRead" class="read-status" />
     <div class="notification-title">{{ title }}</div>
-    <div v-if="readMoreActivated" class="notification-content">
+    <div v-if="hiddenContent" class="notification-content">
       {{ content.slice(0, 80) }} {{ '...' }}
       <a
-        v-if="readMoreActivated"
+        v-if="hiddenContent"
         class="read-more"
         href="#"
         @click="activateReadMore"
@@ -21,43 +21,47 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, ref, toRefs, defineEmits } from 'vue';
+import { defineProps, ref, defineEmits, computed } from 'vue';
+import moment from 'moment';
+import { AnnouncementType } from '@/modules/theHeader/domain/announcementType';
+import { Announcement } from '@/modules/theHeader/domain/noticePop';
+
+interface TodoProps {
+  content: string;
+  id: number;
+  startTime: number;
+  title: string;
+  type: AnnouncementType;
+  excludeFromCount: boolean;
+  readAt: number | null;
+}
+
+const props = defineProps<TodoProps>();
+
+interface TodoEmits {
+  (e: 'isRead', notice: Announcement): void;
+}
+
+const emits = defineEmits<TodoEmits>();
 
 const readMoreActivated = ref(false);
 
-// 宣告props的資料類型
-export interface TodoProps {
-  content?: string;
-  dateAndTime?: string;
-  title?: string;
-}
-// 從父層傳過來的資料型態
-const props = withDefaults(defineProps<TodoProps>(), {
-  content: '',
-  dateAndTime: '',
-  title: '',
-});
+const hiddenContent = computed(
+  () => props.content.length >= 80 && !readMoreActivated.value
+);
 
-// 宣告emit的動作和資料類型
-export interface TodoEmits {
-  (e: 'isRead'): void;
-}
-// 將從子層傳出去的資料
-const emits = defineEmits<TodoEmits>();
-// 從父層拿到的
-const { content } = toRefs(props);
+const unRead = computed(() => props.readAt === null);
 
-if (content.value.length >= 80) {
-  readMoreActivated.value = true;
-}
+const formateDate = computed(() =>
+  moment(props.startTime).format('YYYY-MM-DD HH:mm:ss')
+);
 
-const unRead = ref(true);
 function isRead() {
-  emits('isRead');
-  unRead.value = false;
+  emits('isRead', props);
 }
+
 function activateReadMore() {
-  readMoreActivated.value = false;
+  readMoreActivated.value = true;
 }
 </script>
 

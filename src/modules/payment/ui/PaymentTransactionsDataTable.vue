@@ -1,10 +1,5 @@
 <template>
-  <DataTable
-    v-if="isTable"
-    :columns="columns"
-    :data="resolvedData"
-    row-key="id"
-  >
+  <DataTable v-if="isTable" :columns="columns" :data="resolvedData">
     <template #order="{ rowIndex }">
       {{ rowIndex + 1 }}
     </template>
@@ -27,8 +22,15 @@
         {{ record.orderId }}
       </Typography>
     </template>
+    <template #amount="{ record }">
+      <Typography v-if="record.amount.toString().includes('-')">
+        {{ record.amount }}
+      </Typography>
+      <Typography v-else>
+        {{ `+${record.amount}` }}
+      </Typography>
+    </template>
   </DataTable>
-  <!-- ExpansionPanel -->
   <template v-else>
     <!-- <div class="expansionHeader">
       <div>
@@ -49,7 +51,6 @@
           <GridExpansionPanelHeader
             :data="record"
             :columns="gridExpansionPanelHeaderColumns"
-            :row-index="index"
           >
             <template #order>
               {{ index + 1 }}
@@ -62,6 +63,14 @@
                 {{ text }}
               </Typography>
             </template> -->
+            <template #amount>
+              <Typography v-if="record.amount.toString().includes('-')">
+                {{ record.amount }}
+              </Typography>
+              <Typography v-else>
+                {{ `+${record.amount}` }}
+              </Typography>
+            </template>
           </GridExpansionPanelHeader>
         </template>
         <template #content>
@@ -74,6 +83,17 @@
                 {{ text }}
               </Typography>
             </template> -->
+            <template #amount>
+              <Typography
+                v-if="record.amount.toString().includes('-')"
+                device="mobile"
+              >
+                {{ record.amount }}
+              </Typography>
+              <Typography v-else device="mobile">
+                {{ `+${record.amount}` }}
+              </Typography>
+            </template>
             <template #time>
               <Typography component="span" size="sm">
                 {{ record.date }}&nbsp;{{ record.time }}
@@ -119,6 +139,11 @@
     :data="{ ...detail, ...userData }"
     @close="close"
   />
+  <BonusTransferDetail
+    v-model:visible="openBonusTransferDetail"
+    :data="{ ...detail, ...userData }"
+    @close="close"
+  />
 </template>
 
 <script setup lang="ts">
@@ -143,6 +168,7 @@ import {
 } from '../domain/payment.i18n';
 import {
   PaymentTransaction,
+  PaymentTransactionDetails,
   PaynentTransactionsDetail,
   UserInfo,
 } from '../domain/payment.model';
@@ -171,6 +197,8 @@ import { getPaymentOption } from '@/modules/paymentsHistory/infrastructure/payme
 import WithdrawPaymentsHistoryDetail from '@/modules/paymentsHistory/ui/WithdrawPaymentsHistoryDetail.vue';
 import AccountingAdjustmentDetail from '@/modules/payment/ui/AccountingAdjustmentDetail.vue';
 import RebateDetail from './RebateDetail.vue';
+import BonusTransferDetail from '@/modules/bonusesHistory/ui/BonusTransferDetail.vue';
+import { BonusesHistoryDetails } from '@/modules/bonusesHistory/domain/bounusesHistory.model';
 
 const { t } = useI18n();
 const paymentOption = ref<PaymentType[]>([]);
@@ -181,7 +209,7 @@ const paymentOption = ref<PaymentType[]>([]);
 const columns: DataTableColumn<typeof resolvedData.value[number]>[] = [
   {
     key: 'order',
-    header: 'Order',
+    header: 'No.',
   },
   {
     key: 'kind',
@@ -220,14 +248,19 @@ const columns: DataTableColumn<typeof resolvedData.value[number]>[] = [
 ];
 
 const props = withDefaults(
-  defineProps<{ contentData: PaymentTransaction[]; isTable: boolean }>(),
+  defineProps<{
+    contentData: PaymentTransaction[];
+    isTable: boolean;
+    walletDetail: PaymentTransactionDetails[];
+  }>(),
   {
     contentData: () => [],
+    walletDetail: () => [],
     // isTable: false,
   }
 );
 
-const { contentData, isTable } = toRefs(props);
+const { contentData, isTable, walletDetail } = toRefs(props);
 
 const resolvedData = computed(() =>
   contentData.value.map((record) => {
@@ -302,9 +335,10 @@ const openGameHistoryDetail = ref(false);
 const openWithdrawPaymentsHistoryDetail = ref(false);
 const openAccountingAdjustmentDetail = ref(false);
 const openRebateDetail = ref(false);
+const openBonusTransferDetail = ref(false);
 
 const detail = ref<PaynentTransactionsDetail | null>(null);
-
+const bonusTransferDetailData = ref<BonusesHistoryDetails[]>([]);
 function openDialog(record: PaynentTransactionsDetail | null) {
   if (record?.kind === 'Deposit') {
     getPaymentsHistoryDetail({ orderId: record.orderId }).then((data) => {
@@ -462,6 +496,15 @@ function openDialog(record: PaynentTransactionsDetail | null) {
       };
       openRebateDetail.value = true;
     });
+  } else if (record?.kind === 'Wallet Transfer') {
+    const dateAndTime = `${record.date} ${record.time}`;
+    bonusTransferDetailData.value = walletDetail.value;
+    const found = bonusTransferDetailData.value.filter(
+      (element) => element.logId === record.id
+    );
+    const transferedBonusId = found.map((element) => element.orderId);
+    detail.value = { ...record, transferedBonusId, dateAndTime };
+    openBonusTransferDetail.value = true;
   }
 }
 function close() {
@@ -470,6 +513,7 @@ function close() {
   openWithdrawPaymentsHistoryDetail.value = false;
   openAccountingAdjustmentDetail.value = false;
   openRebateDetail.value = false;
+  openBonusTransferDetail.value = false;
 }
 
 const userData = ref<UserInfo | null>(null);

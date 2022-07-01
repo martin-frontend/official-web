@@ -1,183 +1,183 @@
 <template>
-  <DialogPrimevue :modal="true">
-    <div class="signUp-dialog-wrapper">
-      <div class="signUp-dialog" @mousedown="onClickDialog">
-        <div class="signUp-dialog-close" @click="closeDialog">
-          <IconBase
-            :width="30"
-            :height="30"
-            viewBox="0 0 30 30"
-            icon-color="#fff"
-          >
-            <IconClose />
-          </IconBase>
+  <CommonDialog @close="closeDialog">
+    <div class="signUp-dialog" @mousedown="onClickDialog">
+      <div class="signUp-dialog-content p-input-filled">
+        <div class="signUp-logo">
+          <img src="@/assets/images/sign-up-text-logo.png" />
         </div>
-        <div class="signUp-dialog-content p-input-filled">
-          <div class="signUp-logo">
-            <img src="@/assets/images/sign-up-text-logo.png" />
-          </div>
-          <div class="signUp-steps-wrapper">
-            <SignUpDialogSteps :total-steps="3" :current-step="step" />
-          </div>
-          <!-- STEP 1 -->
-          <div v-if="step === 1" class="signUp-inputs-group">
-            <span class="p-float-label">
-              <InputText v-model="email" type="text" />
-              <label>{{ t('sign_up.email_address') }}</label>
-            </span>
+        <div class="signUp-steps-wrapper">
+          <SignUpDialogSteps :total-steps="3" :current-step="step" />
+        </div>
+        <!-- STEP 1 -->
+        <div v-if="step === 1" class="signUp-inputs-group">
+          <span class="p-float-label">
+            <InputBox
+              v-model="form.email"
+              :label="t('sign_up.email_address')"
+              :error-message="t('account_and_security.email_password_error')"
+              :is-error="isFormError.email"
+            />
+          </span>
 
-            <div class="phone-group">
-              <span class="p-float-label phone-prefix">
-                <Dropdown
-                  v-model="phoneNumberPrefix"
-                  :options="[
-                    { label: '+886', value: '+886' },
-                    { label: '+86', value: '+86' },
-                  ]"
-                  option-label="label"
-                  option-value="value"
-                />
-                <label>{{ t('sign_up.prefix') }}</label>
-              </span>
-              <span class="p-float-label phone-number">
-                <InputText v-model="phoneNumberMain" type="text" />
-                <label>{{ t('sign_up.mobile') }}</label>
-              </span>
-            </div>
-
-            <span class="p-float-label">
-              <InputText
-                v-model="password"
-                :type="isPasswordShown ? 'text' : 'password'"
+          <div class="phone-group">
+            <span class="p-float-label phone-prefix">
+              <Dropdown
+                v-model="form.phoneNumberPrefix"
+                :options="[
+                  { label: '+886', value: '+886' },
+                  { label: '+86', value: '+86' },
+                ]"
+                option-label="label"
+                option-value="value"
               />
-              <label>{{ t('sign_up.password') }}</label>
-              <div
-                class="password-text-hidden-switcher"
-                @click="togglePasswordShown"
-              >
-                <IconBase
-                  :width="24"
-                  :height="24"
-                  viewBox="0 0 24 24"
-                  icon-color="black"
-                >
-                  <IconShowInfo v-if="isPasswordShown" />
-                  <IconHideInfo v-else />
-                </IconBase>
-              </div>
+              <label>{{ t('sign_up.prefix') }}</label>
             </span>
+            <span class="p-float-label phone-number">
+              <InputBox
+                v-model="form.phoneNumberMain"
+                :error-message="t('form_message.phnoe_number')"
+                :is-error="isFormError.phoneNumberMain"
+                :label="t('sign_up.mobile')"
+              />
+            </span>
+          </div>
 
-            <div class="accept-content">
-              <Checkbox v-model="privacyPolicyAccepted" :binary="true" />
-              <div class="accept-content-text">
-                {{
-                  'By checking this box I accept the Terms and Conditions, Privacy policy and confirm that I am over 18 years of age. *'
-                }}
-              </div>
+          <span class="p-float-label">
+            <PasswordInputBox
+              v-model="form.password"
+              :label="t('sign_up.password')"
+              :error-message="`${t(
+                'account_and_security.new_password_error1'
+              )} (@#$%^&+=?!:~_-).`"
+              :is-error="isFormError.password"
+            />
+          </span>
+
+          <div class="accept-content">
+            <Checkbox v-model="form.privacyPolicyAccepted" :binary="true" />
+            <div class="accept-content-text">
+              {{
+                'By checking this box I accept the Terms and Conditions, Privacy policy and confirm that I am over 18 years of age. *'
+              }}
             </div>
           </div>
-          <!-- STEP 2 -->
-          <div v-if="step === 2" class="signUp-inputs-group">
+        </div>
+        <!-- STEP 2 -->
+        <div v-if="step === 2" class="signUp-inputs-group">
+          <span class="p-float-label">
+            <InputBox
+              v-model="form.firstname"
+              :label="t('sign_up.first_name')"
+              type="text"
+              :error-message="t('form_message.required')"
+              :is-error="isFormError.firstname"
+            />
+          </span>
+          <span class="p-float-label">
+            <InputBox
+              v-model="form.lastname"
+              :label="t('sign_up.last_name')"
+              type="text"
+              :error-message="t('form_message.required')"
+              :is-error="isFormError.lastname"
+            />
+          </span>
+          <div class="birth-title">{{ t('sign_up.date_of_birth') }}</div>
+          <div class="birth-select-group">
             <span class="p-float-label">
-              <InputText v-model="firstname" type="text" />
-              <label>{{ t('sign_up.first_name') }}</label>
+              <Dropdown
+                v-model="form.yearOfBirth"
+                :options="birthYearOptions"
+                option-label="label"
+                option-value="value"
+              />
+              <label>{{ 'YYYY' }}</label>
             </span>
             <span class="p-float-label">
-              <InputText v-model="lastname" type="text" />
-              <label>{{ t('sign_up.last_name') }}</label>
+              <Dropdown
+                v-model="form.monthOfBirth"
+                :options="birthMonthOptions"
+                option-label="label"
+                option-value="value"
+              />
+              <label>{{ 'MM' }}</label>
             </span>
-            <div class="birth-title">{{ t('sign_up.date_of_birth') }}</div>
-            <div class="birth-select-group">
-              <span class="p-float-label">
-                <Dropdown
-                  v-model="yearOfBirth"
-                  :options="birthYearOptions"
-                  option-label="label"
-                  option-value="value"
-                />
-                <label>{{ 'YYYY' }}</label>
-              </span>
-              <span class="p-float-label">
-                <Dropdown
-                  v-model="monthOfBirth"
-                  :options="birthMonthOptions"
-                  option-label="label"
-                  option-value="value"
-                />
-                <label>{{ 'MM' }}</label>
-              </span>
-              <span class="p-float-label">
-                <Dropdown
-                  v-model="dayOfBirth"
-                  :options="birthDayOptions"
-                  option-label="label"
-                  option-value="value"
-                />
-                <label>{{ 'DD' }}</label>
-              </span>
-            </div>
-            <div class="gender-wrapper">
-              <div
-                class="gender-block"
-                :class="{ 'active-gender': gender === 'M' }"
-                @click="setGender('M')"
-              >
-                <IconBase
-                  class="gender-icon"
-                  :width="24"
-                  :height="24"
-                  viewBox="0 0 24 24"
-                  icon-color="#424242"
-                >
-                  <IconMale />
-                </IconBase>
-                {{ 'Male' }}
-              </div>
-              <div
-                class="gender-block"
-                :class="{ 'active-gender': gender === 'F' }"
-                @click="setGender('F')"
-              >
-                <IconBase
-                  class="gender-icon"
-                  :width="24"
-                  :height="24"
-                  viewBox="0 0 24 24"
-                  icon-color="#424242"
-                >
-                  <IconFemale />
-                </IconBase>
-                {{ 'Female' }}
-              </div>
-            </div>
-            <span class="p-float-label p-input-icon-left promo-code-input">
+            <span class="p-float-label">
+              <Dropdown
+                v-model="form.dayOfBirth"
+                :options="birthDayOptions"
+                option-label="label"
+                option-value="value"
+              />
+              <label>{{ 'DD' }}</label>
+            </span>
+          </div>
+          <div class="gender-wrapper">
+            <div
+              class="gender-block"
+              :class="{ 'active-gender': form.gender === 'M' }"
+              @click="setGender('M')"
+            >
               <IconBase
+                class="gender-icon"
                 :width="24"
                 :height="24"
                 viewBox="0 0 24 24"
                 icon-color="#424242"
-                class="promo-code-icon"
               >
-                <IconPriceTag />
+                <IconMale />
               </IconBase>
-              <InputText v-model="promoCode" type="text" />
-              <label>{{ t('sign_up.promo_code') }}</label>
-            </span>
+              {{ 'Male' }}
+            </div>
+            <div
+              class="gender-block"
+              :class="{ 'active-gender': form.gender === 'F' }"
+              @click="setGender('F')"
+            >
+              <IconBase
+                class="gender-icon"
+                :width="24"
+                :height="24"
+                viewBox="0 0 24 24"
+                icon-color="#424242"
+              >
+                <IconFemale />
+              </IconBase>
+              {{ 'Female' }}
+            </div>
           </div>
-          <!-- STEP 3 -->
-          <div v-if="step === 3" class="signUp-inputs-group">
+          <span class="p-float-label p-input-icon-left promo-code-input">
+            <IconBase
+              :width="24"
+              :height="24"
+              viewBox="0 0 24 24"
+              icon-color="#424242"
+              class="promo-code-icon"
+            >
+              <IconPriceTag />
+            </IconBase>
+            <InputText v-model="form.promoCode" type="text" />
+            <label>{{ t('sign_up.promo_code') }}</label>
+          </span>
+        </div>
+        <!-- STEP 3 -->
+        <div v-if="step === 3" class="signUp-inputs-group">
+          <span class="p-float-label">
+            <Dropdown v-model="form.country" :options="['The U.K', 'Taiwan']" />
+            <label>{{ t('sign_up.country') }}</label>
+          </span>
+
+          <div class="city-and-currency">
             <span class="p-float-label">
-              <Dropdown v-model="country" :options="['The U.K', 'Taiwan']" />
-              <label>{{ t('sign_up.country') }}</label>
+              <InputBox
+                v-model="form.city"
+                :label="t('sign_up.city')"
+                :error-message="t('form_message.required')"
+                :is-error="isFormError.city"
+              />
             </span>
 
-            <div class="city-and-currency">
-              <span class="p-float-label">
-                <InputText v-model="city" />
-                <label>{{ t('sign_up.city') }}</label>
-              </span>
-
-              <!-- <span class="p-float-label">
+            <!-- <span class="p-float-label">
                 <Dropdown
                   v-model="currency"
                   :options="currencyStore.currencyOptions"
@@ -186,71 +186,79 @@
                 />
                 <label>{{ 'Currency' }}</label>
               </span> -->
-            </div>
-
-            <span class="p-float-label">
-              <InputText v-model="address" />
-              <label>{{ t('sign_up.address') }}</label>
-            </span>
-
-            <span class="p-float-label">
-              <InputText v-model="zipCode" />
-              <label>{{ t('sign_up.zipcode') }}</label>
-            </span>
-
-            <div class="accept-content">
-              <Checkbox v-model="notificationEnabled" :binary="true" />
-              <div class="accept-content-text">
-                {{ 'Don’t send me bouns offer, news, or service updates.' }}
-              </div>
-            </div>
           </div>
-          <div class="signUp-dialog-buttons">
-            <div v-if="step !== 1" class="back-button" @click="clickBack">
-              <IconBase
-                :width="16"
-                :height="16"
-                viewBox="0 0 16 16"
-                icon-color="#fff"
-              >
-                <IconBackArrow />
-              </IconBase>
+
+          <span class="p-float-label">
+            <InputBox
+              v-model="form.address"
+              :label="t('sign_up.address')"
+              :error-message="t('form_message.required')"
+              :is-error="isFormError.address"
+            />
+          </span>
+
+          <span class="p-float-label">
+            <InputBox
+              v-model="form.zipCode"
+              :label="t('sign_up.zipcode')"
+              :error-message="t('form_message.required')"
+              :is-error="isFormError.zipCode"
+            />
+          </span>
+
+          <div class="accept-content">
+            <Checkbox v-model="form.notificationEnabled" :binary="true" />
+            <div class="accept-content-text">
+              {{ 'Don’t send me bouns offer, news, or service updates.' }}
             </div>
-            <Button variant="block" size="small" @click="clickContinue">
-              {{ t('common.continue') }}
-            </Button>
           </div>
         </div>
-        <div class="signUp-banner">
-          <picture>
-            <source
-              srcset="@/assets/images/sign-up-banner-phones.jpg"
-              media="(max-width: 767px)"
-            />
-            <source
-              srcset="@/assets/images/sign-up-banner-phones.jpg"
-              media="(max-width: 359px)"
-            />
-            <img src="@/assets/images/sign-up-banner.jpg" />
-          </picture>
+        <div class="signUp-dialog-buttons">
+          <div v-if="step !== 1" class="back-button" @click="clickBack">
+            <IconBase
+              :width="16"
+              :height="16"
+              viewBox="0 0 16 16"
+              icon-color="#fff"
+            >
+              <IconBackArrow />
+            </IconBase>
+          </div>
+          <Button
+            :disabled="!form.privacyPolicyAccepted"
+            variant="block"
+            size="small"
+            @click="clickContinue"
+          >
+            {{ t('common.continue') }}
+          </Button>
         </div>
       </div>
+      <div class="signUp-banner">
+        <picture>
+          <source
+            srcset="@/assets/images/sign-up-banner-phones.jpg"
+            media="(max-width: 767px)"
+          />
+          <source
+            srcset="@/assets/images/sign-up-banner-phones.jpg"
+            media="(max-width: 359px)"
+          />
+          <img src="@/assets/images/sign-up-banner.jpg" />
+        </picture>
+      </div>
     </div>
-  </DialogPrimevue>
+  </CommonDialog>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, defineEmits } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DialogPrimevue from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Checkbox from 'primevue/checkbox';
-// import Button from 'primevue/button';
 import Button from '@/components/Button.vue';
 import SignUpDialogSteps from './SignUpDialogSteps.vue';
-import IconHideInfo from '@/components/icons/IconHideInfo.vue';
-import IconShowInfo from '@/components/icons/IconShowInfo.vue';
 import IconBase from '@/components/icons/IconBase.vue';
 import {
   getMonthsList,
@@ -262,17 +270,21 @@ import IconFemale from '@/components/icons/IconFemale.vue';
 import IconMale from '@/components/icons/IconMale.vue';
 import IconPriceTag from '@/components/icons/IconPriceTag.vue';
 import IconBackArrow from '@/components/icons/IconBackArrow.vue';
-import IconClose from '@/components/icons/IconClose.vue';
-import useCurrencyStore from '@/modules/currency/infrastructure/store/currencyStore';
-import register from '@/modules/user/application/register';
+// import useCurrencyStore from '@/modules/currency/infrastructure/store/currencyStore';
+import register, { useRegisterForm } from '@/modules/user/application/register';
 import { checkUserStatus } from '@/modules/user/application/user';
+import CommonDialog from '@/layout/CommonDialog.vue';
+import PasswordInputBox from '@/components/PasswordInputBox.vue';
+import InputBox from '@/components/InputBox.vue';
+import { closeSignUpDialog } from '@/modules/user/application/login';
+import { usePathName } from '@/core/pathName/usePathName';
 
 // use i18n
 const { t } = useI18n();
 
 // control open or close sign up dialog
 
-const currencyStore = useCurrencyStore();
+// const currencyStore = useCurrencyStore();
 
 const lastTarget = ref<Element | null>(null);
 
@@ -280,92 +292,66 @@ function onClickDialog(event: MouseEvent) {
   lastTarget.value = event.target as Element;
 }
 
-// password text show or hide
-const isPasswordShown = ref(false);
+// step control
+const step = ref(1);
 
-function togglePasswordShown() {
-  isPasswordShown.value = !isPasswordShown.value;
-}
-
-// form data
-const address = ref('');
-const city = ref('');
-const country = ref('The U.K');
-// const currency = ref('');
-const email = ref('');
-const firstname = ref('');
-const gender = ref<'M' | 'F'>('M');
-const lastname = ref('');
-const password = ref('');
-const promoCode = ref('');
-const zipCode = ref('');
-const dayOfBirth = ref(1);
-const monthOfBirth = ref(1);
-const yearOfBirth = ref(new Date().getFullYear() - 18);
-const phoneNumberPrefix = ref('');
-const phoneNumberMain = ref('');
-const notificationEnabled = ref(false);
-const privacyPolicyAccepted = ref(false);
+const { form, isFormError, formValidator } = useRegisterForm();
 
 const birthYearOptions = ref(getYearsList(18));
 const birthMonthOptions = ref(getMonthsList());
 const birthDayOptions = computed(() =>
-  getDaysList(yearOfBirth.value, monthOfBirth.value)
+  getDaysList(form.yearOfBirth, form.monthOfBirth)
 );
 
-function setGender(value: 'M' | 'F') {
-  gender.value = value;
+function closeDialog() {
+  step.value = 1;
+
+  form.email = '';
+  form.phoneNumberPrefix = '+886';
+  form.phoneNumberMain = '';
+  form.password = '';
+  form.privacyPolicyAccepted = false;
+  form.firstname = '';
+  form.lastname = '';
+  form.yearOfBirth = new Date().getFullYear() - 18;
+  form.monthOfBirth = 1;
+  form.dayOfBirth = 1;
+  form.gender = 'M';
+  form.promoCode = '';
+  form.country = 'The U.K';
+  form.city = '';
+  form.address = '';
+  form.zipCode = '';
+  form.notificationEnabled = false;
+
+  birthYearOptions.value = getYearsList(18);
+
+  birthMonthOptions.value = getMonthsList();
+
+  closeSignUpDialog();
 }
 
-// step control
-const step = ref(1);
-const emit = defineEmits<{
-  (e: 'close'): void;
-}>();
-function closeDialog() {
-  address.value = '';
-  city.value = '';
-  country.value = 'The U.K';
-  email.value = '';
-  firstname.value = '';
-  gender.value = 'M';
-  lastname.value = '';
-  password.value = '';
-  promoCode.value = '';
-  zipCode.value = '';
-  dayOfBirth.value = 1;
-  monthOfBirth.value = 1;
-  yearOfBirth.value = new Date().getFullYear() - 18;
-  phoneNumberPrefix.value = '';
-  phoneNumberMain.value = '';
-  notificationEnabled.value = false;
-  privacyPolicyAccepted.value = false;
-  birthYearOptions.value = getYearsList(18);
-  birthMonthOptions.value = getMonthsList();
-  step.value = 1;
-  emit('close');
+function setGender(value: 'M' | 'F') {
+  form.gender = value;
 }
+
+const pathName = usePathName();
+
 async function handleRegister() {
+  const {
+    phoneNumberPrefix,
+    phoneNumberMain,
+    yearOfBirth,
+    monthOfBirth,
+    dayOfBirth,
+    ...arg
+  } = form;
+
   const result = await register({
-    address: address.value,
-    birthday: getDateTimestamp(
-      yearOfBirth.value,
-      monthOfBirth.value,
-      dayOfBirth.value
-    ),
-    city: city.value,
-    country: country.value,
-    // currency: currency.value,
-    email: email.value,
-    firstname: firstname.value,
-    gender: gender.value,
-    lastname: lastname.value,
-    notificationEnabled: notificationEnabled.value,
-    password: password.value,
-    privacyPolicyAccepted: privacyPolicyAccepted.value,
-    promoCode: promoCode.value,
-    phoneNumber: `${phoneNumberPrefix.value}${phoneNumberMain.value}`,
-    zipCode: zipCode.value,
+    ...arg,
+    phoneNumber: `${phoneNumberPrefix}${phoneNumberMain}`,
+    birthday: getDateTimestamp(yearOfBirth, monthOfBirth, dayOfBirth),
+    emailLinkUrlPath: `${pathName}/email-verification`,
   });
 
   if (result) {
@@ -376,17 +362,24 @@ async function handleRegister() {
 
 function clickContinue() {
   if (step.value === 1) {
-    step.value = 2;
+    if (formValidator(step.value)) {
+      step.value = 2;
+    }
+
     return;
   }
   if (step.value === 2) {
-    currencyStore.updateCurrencyOptionsIfEmpty();
+    // currencyStore.updateCurrencyOptionsIfEmpty();
+    if (formValidator(step.value)) {
+      step.value = 3;
+    }
 
-    step.value = 3;
     return;
   }
   if (step.value === 3) {
-    handleRegister();
+    if (formValidator(step.value)) {
+      handleRegister();
+    }
   }
 }
 
@@ -403,20 +396,9 @@ function clickBack() {
 
 <style lang="scss" scoped>
 @import '@/styles/breakpoints.scss';
-.signUp-dialog-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  overflow: hidden;
-}
 .signUp-dialog {
-  position: relative;
   display: flex;
   width: 896px;
-  border-radius: 5px;
-  background: var(--secondary-variants-color);
-  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.45);
   .signUp-dialog-close {
     position: absolute;
     top: 10px;

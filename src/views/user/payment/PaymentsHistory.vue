@@ -1,11 +1,7 @@
 <template>
-  <Container class="container">
-    <Heading
-      :title="t('paymentshistory.title')"
-      class="Heading-title"
-      :define="t('paymentshistory.define')"
-    />
-    <div v-if="isDeposit" class="switch-button-group">
+  <div class="container">
+    <Heading class="Heading-title" :define="t('paymentshistory.define')" />
+    <!-- <div v-if="isDeposit" class="switch-button-group">
       <Button size="small" class="switch-button">
         {{ 'Deposit' }}
       </Button>
@@ -30,13 +26,13 @@
       <Button size="small" class="switch-button">
         {{ 'Withdraw' }}
       </Button>
-    </div>
+    </div> -->
     <template v-if="isDeposit">
       <FiltersWrap
         v-model:start-time="startDate"
         v-model:end-time="endDate"
         :date-limits="dateLimits"
-        @handleSearch="updateCompletionEvent"
+        @handleSearch="onSearchWalletEvents"
       >
         <FiltersWrapItem>
           <div class="selector">
@@ -54,7 +50,7 @@
                 {{ t('paymentshistory.option.failed') }}
               </option>
               <option :value="0">
-                {{ t('paymentshistory.option.Pending') }}
+                {{ t('paymentshistory.option.pending') }}
               </option>
             </select>
             <IconBase
@@ -68,17 +64,15 @@
           </div>
         </FiltersWrapItem>
       </FiltersWrap>
-      <DataTable
-        v-if="isTable"
-        :columns="columns"
-        :data="resolvedData"
-        row-key="id"
-      >
+      <DataTable v-if="isTable" :columns="columns" :data="resolvedData">
         <!-- <template #status="{ record, text }">
           <Text :color="record.status === 'Failed' ? 'error' : 'primary'">
             {{ text }}
           </Text>
         </template> -->
+        <template #order="{ rowIndex }">
+          {{ rowIndex + 1 }}
+        </template>
         <template #time="{ record }">
           <Text component="div" size="tiny">{{ record.date }}</Text>
           <Text component="div" size="tiny">{{ record.time }}</Text>
@@ -155,7 +149,7 @@
     </template>
 
     <withdrawPaymentsHistory v-else />
-  </Container>
+  </div>
   <PaymentsHistoryDetail
     v-model:visible="detail"
     :data="{ ...detail, ...userData }"
@@ -168,7 +162,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormGroup from 'vue-reactive-form';
 import moment from 'moment';
-import Button from '@/components/Button.vue';
+import { useRoute } from 'vue-router';
 import ExpansionPanel from '@/components/ExpansionPanel.vue';
 import DataTable, { DataTableColumn } from '@/components/DataTable.vue';
 import {
@@ -176,12 +170,12 @@ import {
   SearchCompletedUserEventForm,
   UserInfo,
   PaymentType,
+  GetPaymentsHistoryDto,
 } from '@/modules/paymentsHistory/domain/paymentsHistory.model';
 import {
   getPaymentsHitory,
   getPaymentOption,
 } from '@/modules/paymentsHistory/infrastructure/paymentsHistory.api';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import Text from '@/components/Typography.vue';
 import { toDollarsAmount } from '@/libs/dollars';
@@ -206,14 +200,18 @@ const paymentType = ref<PaymentType[]>([]);
 // 表單資料
 const columns: DataTableColumn<typeof resolvedData.value[number]>[] = [
   {
+    key: 'order',
+    header: 'No.',
+  },
+  {
     key: 'id',
     header: 'Order number',
     data: 'id',
   },
   {
-    key: 'paymentChannel',
+    key: 'paymentTypeOption',
     header: 'Method',
-    data: 'paymentChannel',
+    data: 'paymentTypeOption',
   },
   {
     key: 'time',
@@ -234,8 +232,8 @@ const columns: DataTableColumn<typeof resolvedData.value[number]>[] = [
 
 const gridExpansionPanelHeaderColumns = [
   {
-    key: 'paymentChannel',
-    data: 'paymentChannel',
+    key: 'paymentTypeOption',
+    data: 'paymentTypeOption',
   },
   {
     key: 'time',
@@ -253,7 +251,7 @@ const expansionPanelListColumns = [
     header: 'Order number',
   },
   {
-    key: 'paymentChannel',
+    key: 'paymentTypeOption',
     header: 'Method',
   },
   {
@@ -287,17 +285,16 @@ const { startDate, endDate, statusShrink, page } = searchCompletedForm.refs;
 
 const content = ref<PaymentsHistory[]>([]);
 const totalrows = ref(0);
-// ------------------------------------點擊search觸發的函式----------------------------------
+// ------------------------------------切換頁面----------------------------------
 
 function updateCompletionEvent() {
-  const update = {
+  const update: GetPaymentsHistoryDto = {
     startTime: searchCompletedForm.refs.startDate.value,
     endTime: searchCompletedForm.refs.endDate.value,
     page: page.value - 1,
     size: 20,
     statusShrink: statusShrink.value,
   };
-
   if (update.statusShrink === 99) {
     delete update.statusShrink;
   }
@@ -318,6 +315,11 @@ function updateCompletionEvent() {
     });
   });
 }
+// ----------------------------------綁在搜尋---onSearchWalletEvents---------------------------------------------------
+const onSearchWalletEvents = () => {
+  page.value = 1;
+  updateCompletionEvent();
+};
 // -----------------------------------------------------------------------------
 // function isEmpty(val) {
 //   return val === undefined || val == null || val.length <= 0 ? val : '--';
@@ -352,15 +354,9 @@ const resolvedData = computed(() =>
   })
 );
 
-// 切換存提款
-const isDeposit = ref(true);
-function clickWithdraw() {
-  isDeposit.value = false;
-  // getWithdrawPaymentsHitory();
-}
-function clickDeposit() {
-  isDeposit.value = true;
-}
+const route = useRoute();
+
+const isDeposit = computed(() => route.name === 'DepositHistory');
 
 // -----------------------------------------點擊view打開詳細清單-----------------------------
 const detail = ref<PaymentsHistory | null>(null);

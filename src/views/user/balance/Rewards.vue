@@ -1,12 +1,7 @@
-/* eslint-disable no-constant-condition */ /* eslint-disable
-no-constant-condition */ /* eslint-disable no-constant-condition */
 <template>
-  <Container>
+  <div>
     <div class="bonus-block-group">
-      <Heading
-        :title="t('payment.reward.title')"
-        :define="t('payment.reward.define')"
-      />
+      <Heading :define="t('payment.reward.define')" />
 
       <FiltersWrap
         v-model:start-time="startTime"
@@ -100,7 +95,7 @@ no-constant-condition */ /* eslint-disable no-constant-condition */
       :total-rows="totalRows"
       @update:page="updatePlayerWallet(searchWalletForm.values.value)"
     />
-  </Container>
+  </div>
   <RewardsDetail
     v-model:visible="detail"
     :data="{ ...detail, ...userData }"
@@ -119,7 +114,6 @@ import {
   getPaymentTransactionsOther,
 } from '@/modules/payment/infrastructure/payment.api';
 import { SearchPlayerWalletLogFormOther } from '@/modules/userBalance/infrastructure/api/balanceApi';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import {
   GetPaymentTransactionsDtoOther,
@@ -147,7 +141,7 @@ import RewardsDetail from '@/modules/payment/ui/RewardsDetail.vue';
 const withdrawColumns = [
   {
     key: 'order',
-    header: 'No',
+    header: 'No.',
     data: 'order',
   },
   {
@@ -279,8 +273,8 @@ const totalRows = ref<number>(0);
 
 async function updatePlayerWallet({ page }: GetPaymentTransactionsDtoOther) {
   queryObject.page = page;
-  const { content: resContent, totalElements } =
-    await getPaymentTransactionsOther(queryObject);
+  const res = await getPaymentTransactionsOther(queryObject);
+  const { content: resContent, totalElements } = res.page;
   resContent.forEach((data, index) => {
     resContent[index].amount = toDollarsAmount(Number(data.amount));
     resContent[index].beforeAmount = toDollarsAmount(Number(data.beforeAmount));
@@ -292,7 +286,6 @@ async function updatePlayerWallet({ page }: GetPaymentTransactionsDtoOther) {
   totalRows.value = totalElements;
   content.value = resContent;
 }
-
 const onSearchWalletEvents = ({ ...rest }: GetPaymentTransactionsDtoOther) => {
   nowPage.value = 1;
   queryObject = { ...rest };

@@ -13,6 +13,7 @@ import {
   AccountingAdjustment,
   RebateId,
   Rebate,
+  PaymentTransactionDetails,
 } from '../domain/payment.model';
 
 import { fetchGet } from '@/core/services/api/apiBase';
@@ -42,8 +43,11 @@ export function getPaymentTransactions(
 
 export function getPaymentTransactionsOther(
   dto: GetPaymentTransactionsDtoOther
-): Promise<PaymentTransactionObject> {
-  return fetchGet('/finance/v1/player/wallet/log/page', {
+): Promise<{
+  details: PaymentTransactionDetails;
+  page: PaymentTransactionObject;
+}> {
+  return fetchGet('/finance/v2/player/wallet/log/page', {
     ...dto,
     page: dto.page - 1,
     startTime: moment(dto.startTime).startOf('day').valueOf(),

@@ -1,72 +1,98 @@
 <template>
-  <Container>
+  <div>
     <div class="bonus-block-group">
-      <Heading
-        :title="t('account_and_security.title')"
-        :define="t('account_and_security.define')"
-      />
-      <OutlineCard class="outlineCard">
-        <div class="bulletin">
-          <div class="bulletin-content">
-            <div class="bulletin-title">
-              {{ t('account_and_security.change_password') }}
+      <template v-if="$route.name === 'AccountAndSecurity'">
+        <Heading :define="t('account_and_security.define')" />
+        <OutlineCard
+          v-for="({ title, define, to, type }, index) of options"
+          :key="index"
+        >
+          <div class="bulletin">
+            <div class="bulletin-content">
+              <div class="bulletin-title">
+                {{ title }}
+              </div>
+              <div class="bulletin-define">
+                {{ define }}
+              </div>
             </div>
-            <div class="bulletin-define">
-              {{ t('account_and_security.change_password_define') }}
-            </div>
+            <router-link
+              v-if="
+                type === 'changeWithdrawalPassword'
+                  ? userSotre.userInfo?.hasWithdrawalPasswordBeenSet
+                  : true
+              "
+              class="bulletin-button"
+              :to="to"
+            >
+              <Button variant="outlined" size="small">
+                {{ t('common.update') }}
+              </Button>
+            </router-link>
           </div>
-          <router-link class="bulletin-button" to="/user/change-password">
-            <Button variant="outlined" size="small">
-              {{ t('common.update') }}
-            </Button>
-          </router-link>
-        </div>
-      </OutlineCard>
+        </OutlineCard>
+      </template>
+
+      <router-view />
     </div>
-    <div class="bonus-block-group">
-      <OutlineCard>
-        <div class="bulletin">
-          <div class="bulletin-content">
-            <div class="bulletin-title">
-              {{ t('account_and_security.withdraw_password') }}
-            </div>
-            <div class="bulletin-define">
-              {{ t('account_and_security.withdraw_password_define') }}
-            </div>
-          </div>
-          <router-link
-            v-if="userSotre.userInfo?.hasWithdrawalPasswordBeenSet"
-            class="bulletin-button"
-            to="/user/change-withdraw-password"
-          >
-            <Button variant="outlined" size="small">
-              {{ t('common.update') }}
-            </Button>
-          </router-link>
-        </div>
-      </OutlineCard>
-    </div>
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import Container from '@/layout/Container.vue';
+import { computed } from 'vue';
 import Heading from '@/components/Heading.vue';
 import OutlineCard from '@/components/OutlineCard.vue';
 import Button from '@/components/Button.vue';
 import useUserStore from '@/modules/user/Infrastructure/store/userStore';
+
+type OptionType =
+  | 'changePassword'
+  | 'changeWithdrawalPassword'
+  | 'changeWithdrawalAccount';
+
 // use i18n
 const { t } = useI18n();
+
 const userSotre = useUserStore();
+const options = computed<
+  {
+    type: OptionType;
+    title: string;
+    define: string;
+    to: string;
+  }[]
+>(() => [
+  {
+    type: 'changePassword',
+    title: t('account_and_security.change_password'),
+    define: t('account_and_security.change_password_define'),
+    to: '/user/my-account/account-and-security/change-password',
+  },
+  {
+    type: 'changeWithdrawalPassword',
+    title: t('account_and_security.withdraw_password'),
+    define: t('account_and_security.change_password_define'),
+    to: '/user/my-account/account-and-security/change-withdraw-password',
+  },
+  {
+    type: 'changeWithdrawalAccount',
+    title: t('account_and_security.withdrawal_account'),
+    define: t('account_and_security.change_my_withdrawal_account'),
+    to: '/user/my-account/account-and-security/change-withdraw-account',
+  },
+]);
 </script>
 
 <i18n locale="en" src="@/core/locales/en.json"></i18n>
 
 <style lang="scss" scoped>
 @import '@/styles/breakpoints.scss';
-.outlineCard {
+.outline-card {
   overflow: auto;
+  & + & {
+    margin-top: 16px;
+  }
 }
 .bonus-block-group {
   & + & {
@@ -103,7 +129,7 @@ const userSotre = useUserStore();
   }
 
   .bulletin-title {
-    width: 160px;
+    width: 180px;
   }
   .bulletin-define {
     margin-left: 20px;

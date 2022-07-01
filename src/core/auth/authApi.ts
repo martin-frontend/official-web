@@ -1,6 +1,8 @@
+import { initVisitorId } from '@/core/services/visitorId';
 import { fetchPost } from '../services/api/apiBase';
 import { updateAmount } from '@/modules/userBalance/application/balance';
 import useVisitorIdStore from '@/core/auth/visitorId';
+import usePlayerMessageStore from '@/modules/theHeader/infrastructure/store/playerMessage';
 
 export default async function loginApi(
   email: string,
@@ -18,12 +20,17 @@ export async function logoutApi(): Promise<void> {
   return fetchPost('/official/v1/player/logout');
 }
 
+export async function initToken(): Promise<string> {
+  return fetchPost('/official/v1/player/init');
+}
+
 let evtSource: EventSource | null = null;
 
-export function startSubscribe() {
+export async function startSubscribe() {
+  await initVisitorId();
   const visitorIdStore = useVisitorIdStore();
   evtSource = new EventSource(
-    `${process.env.VUE_APP_BASE_PATH}api/official/v1/player/sse/subscribe?visitor-id=${visitorIdStore.visitorId}`
+    `api/official/v1/player/sse/subscribe?visitor-id=${visitorIdStore.visitorId}`
   );
 
   evtSource.onopen = () => {
@@ -36,6 +43,11 @@ export function startSubscribe() {
 
   evtSource.addEventListener('WALLET_AMOUNT', () => {
     updateAmount();
+  });
+
+  evtSource.addEventListener('NEW_MESSAGE', (data: any) => {
+    const playerMessageStore = usePlayerMessageStore();
+    playerMessageStore.setPlayerMessage(JSON.parse(data.data));
   });
 }
 

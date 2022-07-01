@@ -1,5 +1,5 @@
 <template>
-  <Container class="withdraw-container">
+  <div class="withdraw-container">
     <div class="bonus-block-group">
       <Heading
         :title="t('payment.withdraw.title')"
@@ -71,9 +71,11 @@
         </div>
       </Collapse>
     </div>
-  </Container>
-
-  <WithdrawPasswordDialog @showSuccessDialog="setSuccessDialog" />
+  </div>
+  <!-- <SetupWithdrawPasswordDialog v-model:visible="dialog" /> -->
+  <!-- <WithdrawPasswordDialog v-model:visible="dialog" /> -->
+  <VerifyYourMobileNumberDialog v-model:visible="dialog" />
+  <!-- <WithdrawPasswordDialog @showSuccessDialog="setSuccessDialog" /> -->
 </template>
 
 <script lang="ts" setup>
@@ -82,7 +84,6 @@ import { onMounted, ref, computed } from 'vue';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Collapse from '@/components/Collapse.vue';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import OutlineCard from '@/components/OutlineCard.vue';
 import useBalanceStore from '@/modules/userBalance/infrastructure/store/balanceStore';
@@ -93,18 +94,27 @@ import { WithdrawalPaymentMethod } from '@/modules/withdraw/domain/paymentMethod
 import useWithdrawPasswordStore, {
   DialogType,
 } from '@/modules/withdraw/infrastructure/store/withdrawPasswordStroe';
-import WithdrawPasswordDialog from './WithdrawPasswordDialog.vue';
+// import WithdrawPasswordDialog from './WithdrawPasswordDialog.vue';
+import useUserStore from '@/modules/user/Infrastructure/store/userStore';
+// import SetupWithdrawPasswordDialog from '@/modules/withdraw/ui/SetupWithdrawPasswordDialog.vue';
+// import WithdrawPasswordDialog from '@/modules/withdraw/ui/WithdrawPasswordDialog.vue';
+import VerifyYourMobileNumberDialog from '@/modules/withdraw/ui/VerifyYourMobileNumberDialog.vue';
 
 const dialogStore = useDialogStore();
 const withdrawPasswordStore = useWithdrawPasswordStore();
+
+const dialog = ref(true);
 
 const { t } = useI18n();
 const imagePath = `${process.env.VUE_APP_IMAGE_DOMAIN}/file?path=`;
 
 const balanceStore = useBalanceStore();
+
 const balance = computed(
   () => balanceStore.amount - (balanceStore.withdrawalLimit || 0)
 );
+
+const userStore = useUserStore();
 
 const paymentMethods = ref<WithdrawalPaymentMethod[]>([]);
 const amountToWithdraw = ref<number[]>([]);
@@ -114,6 +124,16 @@ const setWithdrawPasswordDialog = (index: number) => {
   amountToWithdraw.value.splice(index, 1);
   if (paymentMethods.value[index]) {
     withdrawPasswordStore.setValue(paymentMethods.value[index]);
+  }
+
+  if (userStore.userInfo?.hasWithdrawalPasswordBeenSet === false) {
+    withdrawPasswordStore.popUp({
+      title: t('payment.withdraw.dialog.setup_withdraw_password'),
+      confirmButtonText: t('common.confirm'),
+      curDialogType: DialogType.SetupWithdrawPassword,
+      amount,
+    });
+    return;
   }
 
   withdrawPasswordStore.popUp({
@@ -155,11 +175,11 @@ onMounted(async () => {
 @import '@/styles/breakpoints.scss';
 .withdraw-container {
   max-width: 720px;
-  padding: 70px 0;
+  // padding: 70px 0;
 
-  @include mobile {
-    padding: 70px 40px;
-  }
+  // @include mobile {
+  //   padding: 70px 40px;
+  // }
 }
 .bonus-block-group {
   & + & {
@@ -222,6 +242,7 @@ onMounted(async () => {
     color: var(--primary-color);
     font-size: 16px;
     line-height: 20px;
+    text-align: left;
   }
 
   .p-button {

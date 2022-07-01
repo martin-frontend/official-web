@@ -1,6 +1,6 @@
 module.exports = {
   filenameHashing: true,
-  publicPath: process.env.VUE_APP_BASE_PATH,
+  publicPath: './',
   lintOnSave: false,
   pluginOptions: {
     i18n: {
@@ -16,8 +16,9 @@ module.exports = {
   devServer: {
     proxy: {
       '^/api': {
-        target: 'https://dev.primestar.plus/dev/coc-official-web/',
-        changeOrigin: true,
+        // target: 'https://dev.primestar.plus/dev/coc-official-web/',
+        target: 'http://192.168.3.9/dev/coc-official-web/',
+        changeOrigin: false,
       },
     },
   },

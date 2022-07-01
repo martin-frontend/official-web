@@ -1,83 +1,50 @@
 <template>
-  <header>
-    <!-- 
-    <div class="lang-area">
-      <Button class="lang-btn primary-linear-btn">
-        <IconBase :width="30" :height="19" viewBox="0 0 30 19">
-          <IconEarth />
-        </IconBase>
-      </Button>
-
-      <span class="lang-name">{{ 'English' }}</span>
-
-      <IconBase
-        :width="9"
-        :height="6"
-        icon-color="#fff"
-        viewBox="0 0 9 6"
-        class="icon-dropdown"
-      >
-        <IconFilledArrow />
-      </IconBase>
-    </div> -->
-
-    <div class="header-left-area">
+  <div class="header-left-area">
+    <div class="hamburger" @click="handleShowMenu(!isMenuShown)">
       <IconBase
         class="icon-hamburger"
         :width="24"
         :height="24"
         viewBox="0 0 24 24"
-        icon-color="#000"
-        @click="handleShowMenu(true)"
       >
-        <IconHamburger />
+        <component :is="isMenuShown ? IconHamburgerMinus : IconHamburgerPlus" />
       </IconBase>
-
-      <div class="recommend-search-button">
-        <Button
-          class="
-            p-button-rounded p-button-icon-only p-button-outlined
-            alert-btn
-          "
-          @click="handleShowRecommend"
-        >
-          <IconBase
-            :width="16"
-            :height="16"
-            viewBox="0 0 16 16"
-            icon-color="#000"
-          >
-            <IconSearch />
-          </IconBase>
-        </Button>
-      </div>
     </div>
 
+    <div
+      class="game"
+      @mouseenter="handleShowGameMenu(true)"
+      @mouseleave="handleShowGameMenu(false)"
+    >
+      <IconBase :width="24" :height="24" viewBox="0 0 24 24" icon-color="black">
+        <IconGame />
+      </IconBase>
+
+      <p>{{ 'GAME' }}</p>
+
+      <IconBase icon-color="black" :width="20" :height="20" viewBox="0 0 20 20">
+        <IconArrow />
+      </IconBase>
+
+      <GameMenu
+        :is-menu-shown="isGameMenuShown"
+        @handleShowRecommend="handleShowRecommend"
+        @handleShowMenu="handleShowGameMenu"
+      />
+    </div>
+  </div>
+  <header>
     <div class="logo-container">
-      <router-link to="/" exact>
-        <div class="logo">{{ 'LOGO' }}</div>
+      <router-link to="/" exact class="flex">
+        <div class="logo">{{ 'Mirage Tech' }}</div>
       </router-link>
     </div>
 
     <div v-if="authStore.isAuthenticated" class="user-info-area">
-      <router-link to="/user/balance">
-        <div class="wallet-amount">
-          <Button
-            class="p-button-rounded p-button-icon-only primary-linear-btn"
-          >
-            <IconBase
-              :width="12"
-              :height="12"
-              viewBox="0 0 12 12"
-              icon-color="#000"
-            >
-              <IconPlus />
-            </IconBase>
-          </Button>
-          <span>{{ balanceStore.amount.toLocaleString() }}</span>
-        </div>
-      </router-link>
+      <WalletAmount class="wallet" />
+
       <NoticePop />
+
       <div class="avatar">{{ userNameLetter }}</div>
 
       <UserPop />
@@ -106,88 +73,59 @@
     </div>
   </header>
 
-  <div class="sub-header" :class="{ 'show-sub-header': isShowSubHeader }">
-    <div class="header-box">
-      <router-link to="/" exact>{{ t('sub_header.home') }}</router-link>
-      <template v-if="!isMatchUserPath">
-        <!-- <router-link to="/slots">{{ 'Slots' }}</router-link> -->
-        <!-- <router-link to="/live-casino">{{ 'Live Casino' }}</router-link> -->
-        <!-- <router-link to="/jackpots">{{ 'Jackpots' }}</router-link> -->
-        <!-- <router-link to="/table-games">{{ 'Table Games' }}</router-link> -->
-        <router-link to="/promotions">
-          {{ t('common.promotions') }}
-        </router-link>
-      </template>
-      <template v-else>
-        <router-link to="/user/balance">
-          {{ t('sub_header.balance') }}
-        </router-link>
-        <router-link to="/user/my-rewards">
-          {{ t('sub_header.rewards') }}
-        </router-link>
-        <router-link to="/user/bonuses">
-          {{ t('sub_header.bonuses') }}
-        </router-link>
-        <router-link to="/user/game-history">
-          {{ t('sub_header.game_history') }}
-        </router-link>
-        <router-link to="/user/verification">
-          {{ t('sub_header.verification') }}
-        </router-link>
-        <router-link to="/user/limit">
-          {{ t('sub_header.responsible_gambling') }}
-        </router-link>
-        <router-link to="/user/personal-settings">
-          {{ t('sub_header.personal_settings') }}
-        </router-link>
-        <router-link to="/user/login-history">
-          {{ t('sub_header.login_history') }}
-        </router-link>
-        <router-link to="/user/refer-friend">
-          {{ t('sub_header.refer_friend') }}
-        </router-link>
-      </template>
-    </div>
-  </div>
-
   <TheMenu
     :is-menu-shown="isMenuShown"
     @handleShowRecommend="handleShowRecommend"
     @handleShowMenu="handleShowMenu"
   />
-  <LoginDialog />
-  <SignUpDialog v-model:visible="signUpDialog" @close="close" />
-  <ForgetPasswordDialog />
+
+  <LoginDialog v-model:visible="loginStore.isLoginDialogShown" />
+
+  <SignUpDialog v-model:visible="signUpStore.isSignUpDialogShown" />
+
+  <ForgetPasswordDialog
+    v-model:visible="forgetPasswordStore.isForgetPasswordDialogShown"
+  />
 </template>
 
 <script setup lang="ts">
 import Button from 'primevue/button';
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+// import { useI18n } from 'vue-i18n';
 import IconBase from '@/components/icons/IconBase.vue';
-// import IconMenu from '@/components/icons/IconMenu.vue';
-// import IconEarth from '@/components/icons/IconEarth.vue';
-// import IconFilledArrow from '@/components/icons/IconFilledArrow.vue';
-import IconPlus from '@/components/icons/IconPlus.vue';
 import IconStar from '@/components/icons/IconStar.vue';
-import LoginDialog from './LoginDialog.vue';
-import SignUpDialog from './signUpDialog/SignUpDialog.vue';
-import ForgetPasswordDialog from './ForgetPasswordDialog.vue';
-import NoticePop from './NoticePop.vue';
-import UserPop from './UserPop.vue';
+import LoginDialog from '@/layout/header/LoginDialog.vue';
+import SignUpDialog from '@/layout/header/signUpDialog/SignUpDialog.vue';
+import NoticePop from '@/layout/header/NoticePop.vue';
+import UserPop from '@/layout/header/userPop/UserPop.vue';
 import useAuthStore from '@/core/auth/authStore';
 import useLoginStore from '@/modules/user/Infrastructure/store/loginStore';
 import useUserStore from '@/modules/user/Infrastructure/store/userStore';
-import useBalanceStore from '@/modules/userBalance/infrastructure/store/balanceStore';
 import useRecommendStore from '@/modules/recommend/infrastructure/store/recommendStore';
-import IconSearch from '@/components/icons/IconSearch.vue';
-import IconHamburger from '@/components/icons/IconHamburger.vue';
-import TheMenu from './TheMenu.vue';
+import IconArrow from '@/components/icons/IconArrow.vue';
+import TheMenu from '@/layout/header/TheMenu.vue';
+import ForgetPasswordDialog from '@/layout/header/ForgetPasswordDialog.vue';
+import useForgetPasswordStore from '@/modules/user/Infrastructure/store/forgetPasswordStore';
+import useSignUpStore from '@/modules/user/Infrastructure/store/signUpStore';
+import {
+  openSignUpDialog,
+  openLoginDialog,
+} from '@/modules/user/application/login';
+import WalletAmount from '@/layout/header/WalletAmount.vue';
+import IconHamburgerPlus from '@/components/icons/IconHamburgerPlus.vue';
+import IconHamburgerMinus from '@/components/icons/IconHamburgerMinus.vue';
+import IconGame from '@/components/icons/IconGame.vue';
+import GameMenu from '@/layout/header/GameMenu.vue';
 
 // use i18n
-const { t } = useI18n();
-const signUpDialog = ref(false);
+// const { t } = useI18n();
+
+const signUpStore = useSignUpStore();
+
+const forgetPasswordStore = useForgetPasswordStore();
+
+const loginStore = useLoginStore();
+
 const isShowSubHeader = ref(false);
 
 const authStore = useAuthStore();
@@ -197,7 +135,6 @@ const recommendStore = useRecommendStore();
 const userNameLetter = computed(() =>
   userStore.userInfo?.firstname?.substring(0, 2)
 );
-const balanceStore = useBalanceStore();
 
 // handle scroll to decide if show subtitle or not
 const startScrollY = ref<number>(0);
@@ -207,9 +144,7 @@ const scrollDebounceTimeout = ref<number>();
 
 const isMenuShown = ref<boolean>(false);
 
-function close() {
-  signUpDialog.value = false;
-}
+const isGameMenuShown = ref<boolean>(false);
 
 function resetScrollY() {
   startScrollY.value = 0;
@@ -243,22 +178,14 @@ onMounted(() => {
   document.addEventListener('scroll', scrollHandler);
 });
 
-const loginStore = useLoginStore();
-function openLoginDialog() {
-  loginStore.setIsLoginDialogShown(true);
-}
-
-function openSignUpDialog() {
-  signUpDialog.value = true;
-}
-
-const route = useRoute();
-
-const isMatchUserPath = computed(() => route.path.startsWith('/user'));
-// const isMatchGamePlayPath = computed(() => route.path.startsWith('/gamePlay'));
-
 const handleShowMenu = (isShow: boolean) => {
   isMenuShown.value = isShow;
+  isGameMenuShown.value = false;
+};
+
+const handleShowGameMenu = (isShow: boolean) => {
+  isGameMenuShown.value = isShow;
+  isMenuShown.value = false;
 };
 
 const handleShowRecommend = () => {
@@ -269,7 +196,7 @@ const handleShowRecommend = () => {
 <i18n locale="en" src="@/core/locales/en.json"></i18n>
 
 <style lang="scss" scoped>
-@import '../../styles/breakpoints.scss';
+@import '@/styles/breakpoints.scss';
 
 header {
   position: fixed;
@@ -280,7 +207,8 @@ header {
   width: 100vw;
   height: 56px;
   background-color: black;
-  padding: 0 26px;
+  padding-right: 26px;
+  border-bottom: 1px solid var(--primary-color);
 
   @include mobile {
     padding: 0 18px;
@@ -288,11 +216,54 @@ header {
 }
 
 .header-left-area {
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 12;
   display: flex;
-  align-items: center;
+  height: 56px;
+  border-bottom: 1px solid var(--primary-color);
 
-  .icon-hamburger {
+  @include mobile {
+    z-index: 11;
+  }
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 100%;
+    background-color: #323232;
     cursor: pointer;
+
+    @include mobile {
+      background-color: transparent;
+    }
+  }
+  .game {
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    width: 176px;
+    height: 100%;
+    background: linear-gradient(180deg, #f0c879 0%, #a8772b 100%);
+    padding: 0 10px 0 25px;
+    cursor: pointer;
+    position: relative;
+
+    @include mobile {
+      display: none;
+    }
+
+    p {
+      margin-left: 11px;
+      margin-right: auto;
+      color: black;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
   .recommend-search-button {
     @include mobile {
@@ -302,22 +273,27 @@ header {
 }
 
 .logo-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  @include mobile {
+    left: 64px;
+    transform: unset;
+  }
   .logo {
-    position: absolute;
-    top: 0;
-    left: 50%;
     color: var(--primary-color);
     font-weight: 500;
     font-size: 38px;
     font-family: var(--font-family);
     line-height: 56px;
-    transform: translateX(-50%);
 
     @include mobile {
-      left: 56px;
+      // position: unset;
+      // margin-left: 10px;
       color: var(--text-primary);
-      font-size: 36px;
-      transform: unset;
+      font-size: 20px;
     }
   }
 }
@@ -355,40 +331,12 @@ header {
   display: flex;
   align-items: center;
   height: 100%;
+  margin-left: auto;
   // margin-left: auto;
   // padding-right: 20px;
 
-  .wallet-amount {
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    min-width: 100px;
-    height: 40px;
-    padding: 0 8px;
-    border: 1px solid #505050;
-    border-radius: 22.5px;
-    background: #000;
-
-    // @include phone-width {
-    //   padding-right: 0;
-    // }
-
-    .p-button-icon-only {
-      width: 26px;
-      height: 26px;
-      padding: 0;
-    }
-
-    span {
-      margin-left: 10px;
-      font-weight: 500;
-      font-size: 12px;
-      font-family: var(--font-family);
-      line-height: 16px;
-      color: var(--text-primary);
-    }
-
-    @include mobile {
+  @include mobile {
+    .wallet {
       display: none;
     }
   }
@@ -435,6 +383,7 @@ header {
 .login-area {
   display: flex;
   align-items: center;
+  margin-left: auto;
 
   .login-btn {
     display: flex;
@@ -548,5 +497,9 @@ header {
   margin-left: 16px;
   padding: 0;
   border: 1px solid #505050;
+}
+
+.flex {
+  display: flex;
 }
 </style>

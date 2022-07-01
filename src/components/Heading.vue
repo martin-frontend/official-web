@@ -15,7 +15,7 @@ import { withDefaults, defineProps } from 'vue';
 import Text, { TypographyColor } from '@/components/Typography.vue';
 
 export interface HeadingProps {
-  title: string;
+  title?: string;
   define?: string;
   otherDefine?: string;
   otherDefineColor?: TypographyColor;
@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<HeadingProps>(), {
 .heading {
   width: 100%;
   margin-bottom: 24px;
+  text-align: left;
 
   &__title {
     color: var(--text-primary);

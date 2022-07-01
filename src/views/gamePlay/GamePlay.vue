@@ -118,8 +118,6 @@ import {
 import { getGame } from '@/modules/game/infrastructure/gameApi';
 import { Game } from '@/modules/game/domain/game.model';
 
-const basePath = process.env.VUE_APP_BASE_PATH;
-
 const route = useRoute();
 const authStore = useAuthStore();
 
@@ -146,7 +144,6 @@ const isFavorite = computed(() => (game.value ? game.value.favorite : false));
 const gamePath = computed(() => {
   if (routeId.value > 0) {
     return getGamePath(
-      basePath,
       `${routeId.value}`,
       isDemo.value,
       !!authStore.isAuthenticated

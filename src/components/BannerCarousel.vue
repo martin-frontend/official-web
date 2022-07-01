@@ -37,11 +37,14 @@ onMounted(() => {
   position: relative !important;
   .carousel__viewport {
     width: 100%;
-    max-height: 1080px !important;
+    height: calc(100vh - 56px) !important;
+  }
+  .carousel__track {
+    height: 100%;
   }
   .carousel__item {
     width: 100%;
-    height: calc(100vh - 56px);
+    height: 100%;
   }
   .carousel__pagination {
     position: absolute;
@@ -76,6 +79,7 @@ onMounted(() => {
       width: 10px !important;
       height: 10px !important;
       margin: 0 4px !important;
+      padding: 0 !important;
     }
   }
 }

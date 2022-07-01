@@ -6,7 +6,12 @@ import {
   SearchCompletedUserEventParams,
   UserEventDto,
 } from '../infrastructure/api/userEventApi.dto';
-import { calculateProgress, calculateInProgress } from './calculateProgress';
+import {
+  calculateProgress,
+  calculateInProgress,
+  consecutiveDayAmount,
+  calculateConsecutiveCompletedDays,
+} from './calculateProgress';
 
 export interface UserEvent {
   id: number;
@@ -17,6 +22,13 @@ export interface UserEvent {
   // progress: string;
   isReceived: boolean;
   isExpired: boolean;
+  isCompleted: boolean;
+  isActivityExpired: boolean;
+  imageUrl: string;
+  description: string;
+  title: string;
+  activityId: number;
+  betAmount: number;
 }
 
 function formatTime(time: number): string {
@@ -29,7 +41,7 @@ function checkIsExpired(
 ): boolean {
   const receivedTime = moment(completedAtTimeStamp);
   const expiredTime = moment(receivedTime).add(receptionLimit, 'days');
-  return receivedTime.isBefore(expiredTime);
+  return receivedTime.isAfter(expiredTime);
 }
 
 function checkActivityIsExpired(endDateTimeStamp: number): boolean {
@@ -77,6 +89,31 @@ export function userEventsDtoToUserEvents(
         userEvent.completedAt,
         userEvent.bonusReceptionLimit
       ),
+      imageUrl: userEvent.imageUrl,
+      mobileImageUrl: userEvent.mobileImageUrl,
+      description: userEvent.description,
+      title: userEvent.title,
+      activityId: userEvent.activityId,
+
+      // 用來輔助確認完成率的參數
+      betAmount: userEvent.betAmount,
+      betConsecutiveTimes: userEvent.betConsecutiveTimes,
+      winConsecutiveTimes: userEvent.winConsecutiveTimes,
+      winAmount: userEvent.winAmount,
+      cumulativeBetAmount: userEvent.cumulativeBetAmount,
+      cumulativeWinAmount: userEvent.cumulativeWinAmount,
+      betFulfill: userEvent.playerActivityDetails?.[0]?.betFulfill,
+      winFulfill: userEvent.playerActivityDetails?.[0]?.winFulfill,
+      completed: userEvent.playerActivityDetails?.[0]?.completed,
+      currentCumulativeBetAmount:
+        userEvent.playerActivityDetails?.[0]?.currentCumulativeBetAmount,
+      currentCumulativeWinAmount:
+        userEvent.playerActivityDetails?.[0]?.currentCumulativeWinAmount,
+      consecutiveDays: userEvent.consecutiveDays,
+      userConsecutiveDayN: `${consecutiveDayAmount(userEvent)}`,
+      userConsecutiveDayY: `${calculateConsecutiveCompletedDays(
+        userEvent.playerActivityDetails || []
+      )}`,
     }));
 }
 

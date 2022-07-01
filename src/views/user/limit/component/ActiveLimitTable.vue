@@ -1,4 +1,21 @@
 <template>
+  <Heading
+    :title="t('payment.limits.active_limits.title')"
+    :define="t('payment.limits.active_limits.define')"
+  />
+
+  <ul class="limit-description">
+    <li>
+      {{
+        'If you have more than one limit in place, the lowest limit will be valid. Example: If you have a limit of 500 a month and 200 a day, you will not be able to deposit more than 200 a day and also no more than 500 a month.'
+      }}
+    </li>
+    <li>
+      {{
+        "If you want to reduce your limit, it will be done immediately. However if you wish to increase it, you will need to wait 24 hours for this to take effect. The date of the change in limits will be visible in 'Pending Limits'"
+      }}
+    </li>
+  </ul>
   <DataTable
     v-if="isTable"
     :data="limitStore.userLimits"
@@ -52,6 +69,7 @@
 <script lang="ts" setup>
 // import { useI18n } from 'vue-i18n';
 import { computed } from 'vue-demi';
+import { useI18n } from 'vue-i18n';
 import DataTable from '@/components/DataTable.vue';
 import Text from '@/components/Typography.vue';
 import useLimitStore from '@/modules/userLimit/infrastructure/store/limitStore';
@@ -61,13 +79,14 @@ import OutlineCard from '@/components/OutlineCard.vue';
 import ExpansionPanel from '@/components/ExpansionPanel.vue';
 import GridExpansionPanelHeader from '@/components/GridExpansionPanelHeader.vue';
 import DoubleColumnList from '@/components/DoubleColumnList.vue';
+import Heading from '@/components/Heading.vue';
 
 const device = useDevice();
 const isTable = computed(
   () =>
     device.value !== Device.MOBILE && device.value !== Device.TABLET_VERTICAL
 );
-// const { t } = useI18n();
+const { t } = useI18n();
 
 const tableHeaderColumns = [
   {

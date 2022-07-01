@@ -145,6 +145,17 @@ export interface RewardDetail {
   achievementTargetType: string;
   achievementTargetTypeName: string;
 }
+
+export interface PaymentTransactionDetails {
+  afterAmount: number;
+  amount: number;
+  beforeAmount: number;
+  id: number;
+  logId: number;
+  logTime: number;
+  orderId: string;
+  remark: string;
+}
 export interface PaymentTransactionObject {
   content: PaymentTransaction[];
   first: boolean;
@@ -266,6 +277,7 @@ export interface WithdrawDetail {
   adjustmentTime: string | number;
   adjustmentReason: string;
   adjustmentStatus?: AccountingAdjustmentStatus | string;
+  transferedBonusId: string[];
 }
 export interface AccountingAdjustment {
   accountingAdjustment: AccountingAdjustmentDetailData;
@@ -389,6 +401,7 @@ export interface PaynentTransactionsDetail {
   adjustmentStatus?: AccountingAdjustmentStatus | string;
   rebateTime: string;
   rebateRate: string;
+  transferedBonusId: string[];
 }
 
 export enum AccountingAdjustmentStatus {

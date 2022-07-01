@@ -5,9 +5,6 @@
         <div class="my-bonus-title">
           {{ t('my_bonuses.transfer_modal.title') }}
         </div>
-        <div class="my-bonus-coin">
-          <img src="@/assets/icons/Bonuses.png" alt="" />
-        </div>
         <div class="my-bonus-amount">{{ balanceStore.bonus }}</div>
       </div>
       <div class="select-all">
@@ -62,36 +59,6 @@
             </div>
           </div>
         </label>
-        <!-- <label class="checkbox-item">
-          <input type="checkbox" value="C#" class="checkbox" />
-          <div class="bonus-data">
-            <span class="bonus-id-and-data">
-              <span class="order-id">{{ 'AZ123546546' }}</span>
-              <div class="receive-date">{{ '2021/11/5 12:06:15' }}</div>
-            </span>
-            <div class="bonus-amount">
-              <div class="my-bonus-coin">
-                <img src="@/assets/icons/Bonuses.png" alt="" />
-              </div>
-              <div class="bonuses-amount">{{ '20' }}</div>
-            </div>
-          </div>
-        </label>
-        <label class="checkbox-item">
-          <input type="checkbox" value="C#" class="checkbox" />
-          <div class="bonus-data">
-            <span class="bonus-id-and-data">
-              <span class="order-id">{{ 'AZ123546546' }}</span>
-              <div class="receive-date">{{ '2021/11/5 12:06:15' }}</div>
-            </span>
-            <div class="bonus-amount">
-              <div class="my-bonus-coin">
-                <img src="@/assets/icons/Bonuses.png" alt="" />
-              </div>
-              <div class="bonuses-amount">{{ '200' }}</div>
-            </div>
-          </div>
-        </label> -->
       </div>
     </div>
     <div class="submit">
@@ -104,7 +71,10 @@
           <div class="total-text">
             {{ t('payment.my_rewards.transfer_modal.total') }}
           </div>
-          <div class="total-amount">{{ transferBonusPoint }}</div>
+          <div class="my-total-amount">
+            <img src="@/assets/icons/Bonuses.png" alt="" />
+            <div class="total-amount">{{ transferBonusPoint }}</div>
+          </div>
         </div>
         <div class="exchange">
           <div class="exchange-name">
@@ -113,31 +83,12 @@
           <div class="exchange-amount">{{ exchangeAmount }}</div>
         </div>
         <Button
-          v-if="disableButton"
           class="transfer-button"
           component="button"
           size="transfer"
           variant="rounded"
-          disabled
-          @click="openConfirmDialog"
-        >
-          <IconBase
-            :width="20"
-            :height="20"
-            viewBox="0 0 24 24"
-            icon-color="var(--primary-color)"
-          >
-            <IconTransfer />
-          </IconBase>
-          {{ t('payment.my_rewards.transferButton') }}
-        </Button>
-        <Button
-          v-else
-          class="transfer-button"
-          component="button"
-          size="transfer"
-          variant="rounded"
-          color="success"
+          :disabled="disableButton"
+          :color="disableButton ? undefined : 'success'"
           @click="openConfirmDialog"
         >
           <IconBase
@@ -167,7 +118,7 @@ import IconBase from '@/components/icons/IconBase.vue';
 import useDialogStore from '@/core/shared/dialogStore';
 import { getTransferRule } from '@/modules/rewards/infrastructure/api/achievementApi';
 import { transferBonuses } from '@/modules/userBalance/infrastructure/api/balanceApi';
-import useToastStore, { defaultToast } from '@/core/shared/toastStore';
+import useToastStore from '@/core/shared/toastStore';
 
 const { t } = useI18n();
 
@@ -266,12 +217,11 @@ const dialogStore = useDialogStore();
 const toastStore = useToastStore();
 
 function openToast() {
-  const toast = { ...defaultToast };
-  toast.toastTitle = t('payment.my_rewards.toast.title');
-  toast.toastDescription = t('payment.my_rewards.toast.description');
-  toast.isIconCheckCircle = true;
-  toast.color = 'success';
-  toastStore.addToastMessage(toast);
+  toastStore.addToastMessage({
+    toastTitle: t('payment.my_rewards.toast.title'),
+    toastDescription: t('payment.my_rewards.toast.description'),
+    isIconCheckCircle: true,
+  });
 }
 
 function openConfirmDialog() {
@@ -339,7 +289,8 @@ onMounted(() => {
       align-items: center;
     }
     .my-bonus-amount {
-      margin-left: 2px;
+      margin-left: 5px;
+      text-align: center;
     }
   }
   .select-all {
@@ -376,27 +327,22 @@ onMounted(() => {
       color: #424242;
     }
   }
-
+  .bonus::-webkit-scrollbar {
+    width: 6px;
+  }
+  .bonus::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  .bonus::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    background: #9e9e9e;
+  }
   .bonus {
     display: flex;
     flex-direction: column;
     padding: 0 16px;
     height: 287px;
-    // overflow: scroll;
     overflow-x: auto;
-
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background-color: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      border-radius: 100px;
-      background: #c1a14e;
-    }
     .checkbox-item {
       padding: 8px 0;
       display: flex;
@@ -440,7 +386,7 @@ onMounted(() => {
           .order-id {
             font-size: 14px;
             font-weight: 400;
-            line-height: 20px;
+            line-height: 22px;
             word-break: break-all;
           }
           .receive-date {
@@ -465,6 +411,9 @@ onMounted(() => {
           }
         }
       }
+    }
+    .checkbox-item:last-child {
+      border: none;
     }
   }
 }
@@ -503,6 +452,8 @@ onMounted(() => {
       .exchange-amount {
         color: #c1a14e;
         margin-left: 4px;
+        font-size: 26px;
+        line-height: 28px;
       }
     }
   }
@@ -519,5 +470,14 @@ onMounted(() => {
 .checkbox {
   width: 15px;
   height: 15px;
+}
+.my-total-amount {
+  display: flex;
+  img {
+    height: 16px;
+    margin-right: 2px;
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

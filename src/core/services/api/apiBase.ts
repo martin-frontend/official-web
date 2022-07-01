@@ -1,8 +1,14 @@
+import useAuthStore from '@/core/auth/authStore';
+import { initVisitorId } from '@/core/services/visitorId';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import useVisitorIdStore from '@/core/auth/visitorId';
 import { getAuthToken } from '../localStorage/authToken';
 import { getLocalLanguage } from '../localStorage/language';
 /* eslint-disable import/prefer-default-export */
+import clearAuth from '@/core/auth/clearAuth';
+import { router } from '@/router';
+import useToastStore from '../../shared/toastStore';
+
 export function createOptions() {
   const visitorIdStore = useVisitorIdStore();
 
@@ -17,17 +23,37 @@ export function createOptions() {
   };
 }
 
-export const basePath = `${process.env.VUE_APP_BASE_PATH}api`;
+export const basePath = 'api';
 
 export async function fetchWrapper<T>(
   input: string,
   // eslint-disable-next-line
-  init?:  Record<string , unknown> | RequestInit
+  init?: Record<string, unknown> | RequestInit
 ): Promise<T> {
   const response = await fetch(input, init);
 
   if (!response.ok) {
     const { message, errors } = await response.json();
+
+    if (response.status === 401) {
+      const authStore = useAuthStore();
+
+      if (authStore.isAuthenticated) {
+        console.log(message, errors);
+        clearAuth();
+
+        router.push('/');
+
+        const toastStore = useToastStore();
+
+        toastStore.addToastMessage({
+          color: 'danger',
+          toastTitle: 'Error',
+          toastDescription: message,
+          isIconError: true,
+        });
+      }
+    }
 
     return Promise.reject(message || errors || 'An unknown error occurred');
   }
@@ -66,6 +92,8 @@ export async function fetchGet<T>(
 ): Promise<T> {
   const url = createUrlWithParams(`${basePath}${path}`, params);
 
+  await initVisitorId();
+
   const response = await fetchWrapper<T>(url, {
     method: 'GET',
     ...createOptions(),
@@ -76,10 +104,12 @@ export async function fetchGet<T>(
 
 export async function fetchPost<T>(
   path: string,
-  body?: Record<string, any> | number,
+  body?: Record<string, any> | number | boolean,
   params?: Record<string, any>
 ): Promise<T> {
   const url = createUrlWithParams(`${basePath}${path}`, params);
+
+  await initVisitorId();
 
   const response = await fetchWrapper<T>(url, {
     method: 'POST',
@@ -97,6 +127,8 @@ export async function fetchPut<T>(
 ): Promise<T> {
   const url = createUrlWithParams(`${basePath}${path}`, params);
 
+  await initVisitorId();
+
   const response = await fetchWrapper<T>(url, {
     method: 'PUT',
     body: JSON.stringify(body),
@@ -111,6 +143,8 @@ export async function fetchDelete<T>(
   params?: Record<string, any>
 ): Promise<T> {
   const url = createUrlWithParams(`${basePath}${path}`, params);
+
+  await initVisitorId();
 
   const response = await fetchWrapper<T>(url, {
     method: 'DELETE',

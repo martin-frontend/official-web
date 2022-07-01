@@ -1,9 +1,6 @@
 <template>
-  <Container>
-    <Heading
-      :title="t('payment.transactions.title')"
-      :define="t('payment.transactions.define')"
-    />
+  <div>
+    <Heading :define="t('payment.transactions.define')" />
     <!-- search for type and date -->
     <FiltersWrap
       v-model:start-time="startTime"
@@ -46,14 +43,18 @@
       </FiltersWrapItem>
     </FiltersWrap>
 
-    <PaymentTransactionsDataTable :content-data="content" :is-table="isTable" />
+    <PaymentTransactionsDataTable
+      :content-data="content"
+      :is-table="isTable"
+      :wallet-detail="bonusTransferDetailData"
+    />
 
     <Pagination
       v-model:page="queryObject.page"
       :total-rows="totalRows"
       @update:page="updateTransactions"
     />
-  </Container>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -61,7 +62,6 @@ import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormGroup from 'vue-reactive-form';
 import moment from 'moment';
-import Container from '@/layout/Container.vue';
 import Heading from '@/components/Heading.vue';
 import Pagination from '@/components/Pagination.vue';
 import {
@@ -76,6 +76,7 @@ import FiltersWrap from '@/components/FiltersWrap.vue';
 import FiltersWrapItem from '@/components/FiltersWrapItem.vue';
 import IconBase from '@/components/icons/IconBase.vue';
 import IconFilledArrow from '@/components/icons/IconFilledArrow.vue';
+import { BonusesHistoryDetails } from '@/modules/bonusesHistory/domain/bounusesHistory.model';
 
 // use i18n
 const { t } = useI18n();
@@ -113,18 +114,21 @@ const queryObject = ref({
   startTime: new Date(),
   endTime: new Date(),
   kind: PaymentTransactionTypeFilter.SEE_ALL,
+  type: 0,
 });
 
 const content = ref<PaymentTransaction[]>([]);
 const totalRows = ref<number>(0);
+const bonusTransferDetailData = ref<BonusesHistoryDetails>();
 
 function updateTransactions() {
   if (queryObject.value.kind === -1) {
     delete queryObject.value.kind;
   }
   getPaymentTransactionsOther(queryObject.value).then((res) => {
-    content.value = res.content;
-    totalRows.value = res.totalElements;
+    content.value = res.page.content;
+    totalRows.value = res.page.totalElements;
+    bonusTransferDetailData.value = res.details;
   });
 }
 
