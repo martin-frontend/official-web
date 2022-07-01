@@ -136,6 +136,7 @@ import IconBase from '@/components/icons/IconBase.vue';
 import IconOTP from '@/components/icons/IconOTP.vue';
 import {
   createPaymentApplicationForm,
+  setupWithdrawPassword,
   withdrawalPasswordVerification,
 } from '@/modules/withdraw/infrastructure/api/getPaymentMethodApi';
 import { getOtpLimitation } from '@/modules/otp/infrastracture/otp.api';
@@ -201,6 +202,13 @@ const setupWithdrawPasswordEvent = () => {
   });
 
   getOtpLimitation(OtpTiming.FIRST_SET_PLAYER_WITHDRAWAL_PASSWORD);
+
+  verifyCallback.value = () => {
+    return setupWithdrawPassword({
+      password: passwordInput.value,
+      token: 
+    })
+  }
 
   // passwordInput.value = '';
 };

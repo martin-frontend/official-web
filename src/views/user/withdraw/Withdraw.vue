@@ -74,7 +74,9 @@
   </div>
   <!-- <SetupWithdrawPasswordDialog v-model:visible="dialog" /> -->
   <!-- <WithdrawPasswordDialog v-model:visible="dialog" /> -->
-  <VerifyYourMobileNumberDialog v-model:visible="dialog" />
+  <!-- <VerifyYourMobileNumberDialog v-model:visible="dialog" /> -->
+  <!-- <NewPasswordDialog v-model:visible="dialog" /> -->
+  <WithdrawalInformationDialog v-model:visible="dialog" />
   <!-- <WithdrawPasswordDialog @showSuccessDialog="setSuccessDialog" /> -->
 </template>
 
@@ -98,7 +100,9 @@ import useWithdrawPasswordStore, {
 import useUserStore from '@/modules/user/Infrastructure/store/userStore';
 // import SetupWithdrawPasswordDialog from '@/modules/withdraw/ui/SetupWithdrawPasswordDialog.vue';
 // import WithdrawPasswordDialog from '@/modules/withdraw/ui/WithdrawPasswordDialog.vue';
-import VerifyYourMobileNumberDialog from '@/modules/withdraw/ui/VerifyYourMobileNumberDialog.vue';
+// import VerifyYourMobileNumberDialog from '@/modules/withdraw/ui/VerifyYourMobileNumberDialog.vue';
+// import NewPasswordDialog from '@/modules/withdraw/ui/NewPasswordDialog.vue';
+import WithdrawalInformationDialog from '@/modules/withdraw/ui/WithdrawalInformationDialog.vue';
 
 const dialogStore = useDialogStore();
 const withdrawPasswordStore = useWithdrawPasswordStore();
